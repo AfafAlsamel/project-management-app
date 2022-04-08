@@ -80,11 +80,7 @@ export default function Home() {
         {/* Board header */}
         <div className="flex flex-initial justify-between">
           <div className="flex items-center">
-            <h4 className="text-4xl font-bold text-gray-600">Studio Board</h4>
-            <ChevronDownIcon
-              className="w-9 h-9 text-gray-500 rounded-full
-            p-1 bg-white ml-5 shadow-xl"
-            />
+            <h4 className="text-4xl font-bold text-gray-100">Kanban board</h4>
           </div>
 
           <ul className="flex space-x-3">
@@ -117,10 +113,10 @@ export default function Home() {
             </li>
             <li>
               <button
-                className="border border-dashed flex items-center w-9 h-9 border-gray-500 justify-center
+                className="border border-dashed flex items-center w-9 h-9 border-gray-100 justify-center
                 rounded-full"
               >
-                <PlusIcon className="w-5 h-5 text-gray-500" />
+                <PlusIcon className="w-5 h-5 text-gray-100" />
               </button>
             </li>
           </ul>
@@ -140,19 +136,16 @@ export default function Home() {
                           ref={provided.innerRef}
                         >
                           <div
-                            className={`bg-gray-100 rounded-md shadow-md
+                            className={`bg-black-100 rounded-md shadow-md
                             flex flex-col relative overflow-hidden
-                            ${snapshot.isDraggingOver && "bg-green-100"}`}
+                            ${snapshot.isDraggingOver && "bg-black-200"}`}
                           >
-                            <span
-                              className="w-full h-1 bg-gradient-to-r from-pink-700 to-red-200
-                          absolute inset-x-0 top-0"
-                            ></span>
+               
                             <h4 className=" p-3 flex justify-between items-center mb-2">
-                              <span className="text-2xl text-gray-600">
+                              <span className="text-2xl text-white">
                                 {board.name}
                               </span>
-                              <DotsVerticalIcon className="w-5 h-5 text-gray-500" />
+                              <DotsVerticalIcon className="w-5 h-5 text-gray-100" />
                             </h4>
 
                             <div className="overflow-y-auto overflow-x-hidden h-auto"
@@ -174,7 +167,7 @@ export default function Home() {
                             {
                               showForm && selectedBoard === bIndex ? (
                                 <div className="p-3">
-                                  <textarea className="border-gray-300 rounded focus:ring-purple-400 w-full" 
+                                  <textarea className="border-gray-100 rounded focus:ring-purple-400 w-full" 
                                   rows={3} placeholder="Task info" 
                                   data-id={bIndex}
                                   onKeyDown={(e) => onTextAreaKeyPress(e)}/>
@@ -184,8 +177,8 @@ export default function Home() {
                                   className="flex justify-center items-center my-3 space-x-2 text-lg"
                                   onClick={() => {setSelectedBoard(bIndex); setShowForm(true);}}
                                 >
-                                  <span>Add task</span>
-                                  <PlusCircleIcon className="w-5 h-5 text-gray-500" />
+                                  <span className="text-gray-100">Add task</span>
+                                  <PlusCircleIcon className="w-5 h-5 text-gray-100" />
                                 </button>
                               )
                             }

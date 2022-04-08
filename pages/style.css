@@ -18,7 +18,7 @@
         @apply bg-white
     }
 
-    *::-webkit-scrollbar-thumb {
+    /*::-webkit-scrollbar-thumb {
         @apply bg-gradient-to-b from-blue-500 to-red-400 rounded;
-    }
+    }*/
 }
