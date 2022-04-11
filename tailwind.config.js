@@ -5,6 +5,7 @@ module.exports = {
   theme: {
     extend: {},
     colors: {
+      transparent: 'transparent',
 
       black: {
         DEFAULT: '#000000',
@@ -22,11 +23,17 @@ module.exports = {
         100: '#7E8D96',
       }
     },
+    fontSize: {
+      sm: ['14px', '20px'],
+      base: ['16px', '24px'],
+      lg: ['20px', '28px'],
+      xl: ['24px', '32px'],
+    }
   },
   variants: {
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/forms')
+   // require('@tailwindcss/forms')
   ]
 }

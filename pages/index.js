@@ -1,4 +1,5 @@
 import Head from "next/head";
+import { AnimatePresence } from "framer-motion";
 import Layout from "../components/Layout";
 import Image from "next/dist/client/image";
 import {
@@ -11,9 +12,14 @@ import CardItem from "../components/CardItem";
 import BoardData from "../data/board-data.json";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useEffect, useState } from "react";
+import Modal from "../components/Modal";
+import { useRecoilState } from "recoil";
+import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
+
+
 
 function createGuidId() {
-  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
     return v.toString(16);
   });
@@ -24,6 +30,14 @@ export default function Home() {
   const [boardData, setBoardData] = useState(BoardData);
   const [showForm, setShowForm] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState(0);
+
+
+  const [modalOpen, setModalOpen] = useRecoilState(modalState)
+  const [modalType, setModalType] = useRecoilState(modalTypeState)
+
+
+
+
 
   useEffect(() => {
     if (process.browser) {
@@ -49,10 +63,10 @@ export default function Home() {
   };
 
   const onTextAreaKeyPress = (e) => {
-    if(e.keyCode === 13) //Enter
+    if (e.keyCode === 13) //Enter
     {
       const val = e.target.value;
-      if(val.length === 0) {
+      if (val.length === 0) {
         setShowForm(false);
       }
       else {
@@ -61,7 +75,7 @@ export default function Home() {
           id: createGuidId(),
           title: val,
           priority: 0,
-          chat:0,
+          chat: 0,
           attachment: 0,
           assignees: []
         }
@@ -140,7 +154,7 @@ export default function Home() {
                             flex flex-col relative overflow-hidden
                             ${snapshot.isDraggingOver && "bg-black-200"}`}
                           >
-               
+
                             <h4 className=" p-3 flex justify-between items-center mb-2">
                               <span className="text-2xl text-white">
                                 {board.name}
@@ -149,7 +163,7 @@ export default function Home() {
                             </h4>
 
                             <div className="overflow-y-auto overflow-x-hidden h-auto"
-                            style={{maxHeight:'calc(100vh - 290px)'}}>
+                              style={{ maxHeight: 'calc(100vh - 290px)' }}>
                               {board.items.length > 0 &&
                                 board.items.map((item, iIndex) => {
                                   return (
@@ -163,25 +177,26 @@ export default function Home() {
                                 })}
                               {provided.placeholder}
                             </div>
-                            
+
                             {
                               showForm && selectedBoard === bIndex ? (
                                 <div className="p-3">
-                                  <textarea className="border-gray-100 rounded focus:ring-purple-400 w-full" 
-                                  rows={3} placeholder="Task info" 
-                                  data-id={bIndex}
-                                  onKeyDown={(e) => onTextAreaKeyPress(e)}/>
+                                  <textarea className="border-gray-100 rounded  w-full"
+                                    rows={3} placeholder="Task info"
+                                    data-id={bIndex}
+                                    onKeyDown={(e) => onTextAreaKeyPress(e)} />
                                 </div>
-                              ): (
+                              ) : (
                                 <button
                                   className="flex justify-center items-center my-3 space-x-2 text-lg"
-                                  onClick={() => {setSelectedBoard(bIndex); setShowForm(true);}}
+                                  onClick={() => { setSelectedBoard(bIndex); setShowForm(true); }}
                                 >
                                   <span className="text-gray-100">Add task</span>
                                   <PlusCircleIcon className="w-5 h-5 text-gray-100" />
                                 </button>
                               )
                             }
+
                           </div>
                         </div>
                       )}
@@ -192,6 +207,14 @@ export default function Home() {
             </div>
           </DragDropContext>
         )}
+
+        {
+          <AnimatePresence>
+            {modalOpen && (
+              <Modal handleClose={() => setModalOpen(false)} type={modalType} />
+            )}
+          </AnimatePresence>
+        }
       </div>
     </Layout>
   );
