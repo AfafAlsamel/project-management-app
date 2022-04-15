@@ -59,7 +59,7 @@ const Modal = ({ handleClose, type, data }) => {
             {type === "dropIn" && (
                 <motion.div
                     onClick={(e) => e.stopPropagation()}
-                    className="rounded flex flex-col drop-shadow-lg justify-center bg-black-100 w-full max-w-5xl mx-6"
+                    className="rounded flex flex-col drop-shadow-lg justify-center bg-black-100 w-full max-w-screen-xl	 mx-6"
                     variants={dropIn}
                     initial="hidden"
                     animate="visible"
@@ -76,11 +76,6 @@ const Modal = ({ handleClose, type, data }) => {
                         <Form />
                     </div>
 
-                    <div className="flex items-center justify-between border-t border-black-300 p-4">
-                        <button onClick={handleClose}>
-                            <XIcon className="h-4 w-4 text-white" />
-                        </button>
-                    </div>
                 </motion.div>
             )}
 
