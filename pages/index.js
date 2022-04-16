@@ -189,11 +189,13 @@ export default function Home() {
                               ) : (
                                 <button
                                   className="flex justify-center items-center my-3 space-x-2 text-lg"
-                                  onClick={() => { setSelectedBoard(bIndex); setShowForm(true); }}
+                                  onClick={() => { setSelectedBoard(bIndex); setModalOpen(true); setModalType("dropIn"); }}
                                 >
                                   <span className="text-gray-100">Add task</span>
                                   <PlusCircleIcon className="w-5 h-5 text-gray-100" />
                                 </button>
+
+
                               )
                             }
 

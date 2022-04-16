@@ -1,11 +1,13 @@
 import React from 'react'
 
-function Field({ fieldType, fieldId, title, placeHolder }) {
+function Field({ fieldType, fieldId, title, placeHolder, fieldValue, fieldFunc }) {
     return (
         <div className="relative">
             <input
                 type={fieldType}
                 id={fieldId}
+                value={fieldValue}
+                onChange={fieldFunc}
                 className="
                 w-full 
                 h-10
