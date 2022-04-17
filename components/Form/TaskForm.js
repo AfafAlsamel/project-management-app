@@ -17,7 +17,7 @@ import {
     updateDoc,
 } from "@firebase/firestore";
 
-import Field from './Field'
+import Field from '../Field'
 import SectionTitle from './SectionTitle';
 
 function Form({ data }) {

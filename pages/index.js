@@ -12,6 +12,7 @@ import CardItem from "../components/CardItem";
 import BoardData from "../data/board-data.json";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useEffect, useState } from "react";
+import Form from "../components/Form/TaskForm";
 import Modal from "../components/Modal";
 import { useRecoilState } from "recoil";
 import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
@@ -179,7 +180,7 @@ export default function Home() {
                             </div>
 
                             {
-                              showForm && selectedBoard === bIndex ? (
+                              selectedBoard === bIndex ? (
                                 <div className="p-3">
                                   <textarea className="border-gray-100 rounded  w-full"
                                     rows={3} placeholder="Task info"
@@ -213,7 +214,7 @@ export default function Home() {
         {
           <AnimatePresence>
             {modalOpen && (
-              <Modal handleClose={() => setModalOpen(false)} type={modalType} />
+              <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form/>}/>
             )}
           </AnimatePresence>
         }

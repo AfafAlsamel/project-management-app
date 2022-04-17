@@ -3,7 +3,6 @@ import Backdrop from "./Backdrop";
 import { XIcon } from "@heroicons/react/outline";
 //import IconButton from "@mui/material/IconButton";
 //import { useSession } from "next-auth/react";
-import Form from "./Form/Form";
 import { useRecoilValue } from "recoil";
 //import { getPostState } from "../atoms/postAtom";
 
@@ -51,7 +50,7 @@ const gifYouUp = {
     },
 };
 
-const Modal = ({ handleClose, type, data }) => {
+const Modal = ({ handleClose, type, comp }) => {
     // const { data: session } = useSession();
 
     return (
@@ -73,7 +72,7 @@ const Modal = ({ handleClose, type, data }) => {
                     </div>
 
                     <div className="p-4 space-y-2">
-                        <Form />
+                       {comp}
                     </div>
 
                 </motion.div>
