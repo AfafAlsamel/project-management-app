@@ -15,7 +15,10 @@ import { useEffect, useState } from "react";
 import Form from "../components/Form/TaskForm";
 import Modal from "../components/Modal";
 import { useRecoilState } from "recoil";
+import { getProviders, getSession, useSession } from "next-auth/react";
+
 import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
+import Login from "../components/Login";
 
 
 
@@ -26,10 +29,13 @@ function createGuidId() {
   });
 }
 
-export default function Home() {
+export default function Home({ trendingResults, followResults, providers }) {
+
+  const { data: session } = useSession();
+
+
   const [ready, setReady] = useState(false);
   const [boardData, setBoardData] = useState(BoardData);
-  const [showForm, setShowForm] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState(0);
 
 
@@ -88,6 +94,9 @@ export default function Home() {
       }
     }
   }
+
+  if (!session) return  <Login providers={providers} />;
+
 
   return (
     <Layout>
@@ -179,26 +188,17 @@ export default function Home() {
                               {provided.placeholder}
                             </div>
 
-                            {
-                              selectedBoard === bIndex ? (
-                                <div className="p-3">
-                                  <textarea className="border-gray-100 rounded  w-full"
-                                    rows={3} placeholder="Task info"
-                                    data-id={bIndex}
-                                    onKeyDown={(e) => onTextAreaKeyPress(e)} />
-                                </div>
-                              ) : (
-                                <button
-                                  className="flex justify-center items-center my-3 space-x-2 text-lg"
-                                  onClick={() => { setSelectedBoard(bIndex); setModalOpen(true); setModalType("dropIn"); }}
-                                >
-                                  <span className="text-gray-100">Add task</span>
-                                  <PlusCircleIcon className="w-5 h-5 text-gray-100" />
-                                </button>
+
+                            <button
+                              className="flex justify-center items-center my-3 space-x-2 text-lg"
+                              onClick={() => { setSelectedBoard(bIndex); setModalOpen(true); setModalType("dropIn"); }}
+                            >
+                              <span className="text-gray-100">Add task</span>
+                              <PlusCircleIcon className="w-5 h-5 text-gray-100" />
+                            </button>
 
 
-                              )
-                            }
+
 
                           </div>
                         </div>
@@ -214,11 +214,34 @@ export default function Home() {
         {
           <AnimatePresence>
             {modalOpen && (
-              <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form/>}/>
+              <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form />} />
             )}
           </AnimatePresence>
         }
       </div>
     </Layout>
+
   );
+
+}
+
+
+export async function getServerSideProps(context) {
+  const trendingResults = await fetch("https://jsonkeeper.com/b/NKEV").then(
+    (res) => res.json()
+  );
+  const followResults = await fetch("https://jsonkeeper.com/b/WWMJ").then(
+    (res) => res.json()
+  );
+  const providers = await getProviders();
+  const session = await getSession(context);
+
+  return {
+    props: {
+      trendingResults,
+      followResults,
+      providers,
+      session,
+    },
+  };
 }
