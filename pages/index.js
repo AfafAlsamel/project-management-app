@@ -15,7 +15,7 @@ import { useEffect, useState } from "react";
 import Form from "../components/Form/TaskForm";
 import Modal from "../components/Modal";
 import { useRecoilState } from "recoil";
-import { modalState, modalType, modalTypeState } from "../atoms/projectAtomss";
+import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
 
 
 
