@@ -19,8 +19,11 @@ import {
 
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
+import { useSession } from 'next-auth/react';
 
 function Form({ data }) {
+    const { data: session } = useSession();
+
     const [taskDetails, setTaskDetails] = useState("");
     const [taskTitle, setTaskTitle] = useState("");
     const [taskDate, setTaskDate] = useState("");
@@ -36,10 +39,10 @@ function Form({ data }) {
         setLoading(true);
 
         const docRef = await addDoc(collection(db, "tasks"), {
-            // id: session.user.uid,
-            // username: session.user.name,
-            // userImg: session.user.image,
-            // tag: session.user.tag,
+            id: session.user.uid,
+            username: session.user.name,
+            userImg: session.user.image,
+            tag: session.user.tag,
             title: taskTitle,
             date: taskDate,
             details: taskDetails,
