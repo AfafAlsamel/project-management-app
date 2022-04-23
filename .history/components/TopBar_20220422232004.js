@@ -5,7 +5,7 @@ import { SearchIcon, AtSymbolIcon, BellIcon, LogoutIcon } from '@heroicons/react
 function TopBar({ userName, userNameTag, userImage, func }) {
     return (
         <div className="h-16 pl-40 bg-black-200 border-2 border-b-black-300 w-full flex items-center justify-between pr-5">
-            <div className="flex px-10 items-center">
+            <div className="flex px-5 items-center">
                 <SearchIcon className="w-5 h-5 text-white" />
                 <input type="text" placeholder="Search for tasks ..."
                     className=" bg-black-200 border-0 text-white placeholder-gray-100
