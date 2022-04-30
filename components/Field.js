@@ -1,6 +1,6 @@
 import React from 'react'
 
-function Field({ fieldType, fieldId, title, placeHolder, fieldValue, fieldFunc }) {
+function Field({ fieldType, fieldId, title, placeHolder, fieldValue, fieldFunc,name }) {
     return (
         <div className="relative">
             <input
@@ -22,6 +22,7 @@ function Field({ fieldType, fieldId, title, placeHolder, fieldValue, fieldFunc }
                 "
                 autocomplete="off"
                 placeholder={placeHolder}
+                name={name}
             />
 
             <label
