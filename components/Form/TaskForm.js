@@ -21,7 +21,7 @@ import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
 
-function Form({ data }) {
+function Form() {
     const { data: session } = useSession();
 
     const [taskDetails, setTaskDetails] = useState("");

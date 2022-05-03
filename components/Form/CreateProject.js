@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { useRecoilState } from "recoil";
 import {
     PaperClipIcon,
     PlusIcon,
@@ -7,7 +6,7 @@ import {
     CogIcon,
     XIcon,
 } from "@heroicons/react/outline";
-import { db, storage } from "../firebase";
+import { db, storage } from "../../firebase";
 import {
     addDoc,
     collection,
@@ -17,25 +16,31 @@ import {
 } from "@firebase/firestore";
 import { MdOutlineSpaceDashboard } from "react-icons/md";
 import { BsFillPersonLinesFill } from "react-icons/bs";
-import Field from './Field'
-import SectionTitle from './Form/SectionTitle';
-import BoardTiltle from './Form/BoardTiltle';
-import MemberTitle from './Form/MemberTitle';
+import Field from '../Field'
+import SectionTitle from './SectionTitle';
+import { useSession } from 'next-auth/react';
+
 
 
 
 function CreateProject() {
 
+    const { data: session } = useSession();
+
     const [projectDetails, setProjectDetails] = useState("");
     const [projectTitle, setprojectTitle] = useState("");
-    const [projectDate, setprojectDate] = useState("");
+    const [projectData, setprojectData] = useState("");
+    const [boardFields, setboardFields] = useState([
+        { title: '', select: '' },
+    ])
     const [loading, setLoading] = useState(false);
-    const [boardTitle, setboardTitle] = useState("");
-    const [boardType, setboardType] = useState("");
 
 
 
-    const dbInstance = collection(db, 'boards');
+
+
+
+    const dbInstance = collection(db, 'boards ');
 
 
 
@@ -51,21 +56,25 @@ function CreateProject() {
     const sendProject = async () => {
         if (loading) return;
         setLoading(true);
-        const docRef = await addDoc(collection(db, "Project"), {
+        const docRef = await addDoc(collection(db, "projects"), {
+            id: session.user.uid,
             title: projectTitle,
-            date: projectDate,
+            date: projectData,
             details: projectDetails,
-            //boardtitle: boardTitle,
-            //type:boardType,
+            boards: boardFields,
             timestamp: serverTimestamp(),
         });
 
+        // const dbInstance = collection(db, `projects/${docRef.id}/board`);
+
+
         setLoading(false);
         setprojectTitle("");
-        setprojectDate("");
+        setprojectData("");
         setProjectDetails("");
-        //setboardTitle("");
-        //setboardType("");
+        setboardFields({ title: '', select: '' })
+
+
     };
 
     {/*const sendBoard = async () => {
@@ -81,9 +90,6 @@ function CreateProject() {
         setboardFields([...boardFields, object])
     };
 */}
-    const [boardFields, setboardFields] = useState([
-        { title: '', select: '' },
-    ])
 
     const handleFormChange = (event, index) => {
         let data = [...boardFields];
@@ -94,7 +100,6 @@ function CreateProject() {
     const submit = (e) => {
         e.preventDefault();
         console.log(boardFields)
-        addBoardToDB();
     }
 
     const addBoard = () => {
@@ -107,14 +112,6 @@ function CreateProject() {
     }
 
 
-    const addBoardToDB = () => {
-        addDoc(dbInstance, {
-            boardFields: boardFields
-
-        })
-        setboardFields({ title: '', select: '' })
-
-    }
 
 
 
@@ -147,8 +144,8 @@ function CreateProject() {
                         </div>
 
                         <Field
-                            fieldValue={projectDate}
-                            fieldFunc={(e) => setprojectDate(e.target.value)}
+                            fieldValue={projectData}
+                            fieldFunc={(e) => setprojectData(e.target.value)}
                             fieldType="date"
                             fieldId="Date"
                             title="Duration"
@@ -161,13 +158,14 @@ function CreateProject() {
                 <div className=" justify-between items-center overflow-auto w-1/3 divide-black-300 p-4 space-y-4">
 
                     <div className="flex justify-between">
-                    <BoardTiltle iconn={<MdOutlineSpaceDashboard className="w-5 h-5 text-white" />} textt="Boards" />
 
-                    <button className='flex items-center cursor-pointer text-gray-100 '
-                        onClick={addBoard} >
-                        <PlusIcon className="w-5 h-5 text-gray-100" />
-                        Add
-                    </button>
+                        <SectionTitle icon={<MdOutlineSpaceDashboard className="w-5 h-5 text-white" />} text="Boards" />
+
+                        <button className='flex items-center cursor-pointer text-gray-100 '
+                            onClick={addBoard} >
+                            <PlusIcon className="w-5 h-5 text-gray-100" />
+                            Add
+                        </button>
 
                     </div>
 
@@ -221,7 +219,7 @@ function CreateProject() {
 
                 {/*Members section*/}
                 <div className="w-1/3 space-y-8 p-4">
-                    <MemberTitle icone={<BsFillPersonLinesFill className="w-5 h-5 text-white" />} texte="Members" />
+                    <SectionTitle icon={<BsFillPersonLinesFill className="w-5 h-5 text-white" />} text="Members" />
                 </div>
             </div>
 
