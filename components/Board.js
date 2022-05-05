@@ -27,7 +27,7 @@ function createGuidId() {
 function Board({boardType}) {
 
     const [ready, setReady] = useState(false);
-    const [boardData, setBoardData] = useState(BoardData);
+    const [boardData, setBoardData] = useState(BoardData); // use RecoilValue "project"
     const [showForm, setShowForm] = useState(false);
     const [selectedBoard, setSelectedBoard] = useState(0);
 

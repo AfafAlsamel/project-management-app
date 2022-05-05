@@ -86,8 +86,15 @@ function Layout({ children }) {
                 </div>
 
                 <div /*src=selectedFile*/ className="text-gray-100">
-                  {Object.values(project.data().boards).map((board) =>
-                    <div className="flex mt-2 items-center">
+                  {Object.values(project.data().boards).map((board, index) =>
+                    <div
+                      className="flex mt-2 items-center cursor-pointer"
+                      onClick={() => router.push({
+                        pathname: router.pathname,
+                        query: {...router.query, myqueryparam:`projects/${project.id}/boards/${board.title}`}
+                      })}
+
+                    >
                       <ClipboardListIcon className="w-5 h-5 text-gray-100" />
                       {board.title}
                     </div>)}

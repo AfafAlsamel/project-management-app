@@ -36,7 +36,7 @@ function CreateProject() {
     const [projectTitle, setprojectTitle] = useState("");
     const [projectData, setprojectData] = useState("");
     const [boardFields, setboardFields] = useState([
-        { title: '', select: '' },
+        { title: '', select: '' , tasks: [{}]},
     ])
     const [loading, setLoading] = useState(false);
 
@@ -75,7 +75,7 @@ function CreateProject() {
         setprojectTitle("");
         setprojectData("");
         setProjectDetails("");
-        setboardFields({ title: '', select: '' })
+        setboardFields({title: '', select: '', tasks: [{}]})
 
 
     };
@@ -108,7 +108,8 @@ function CreateProject() {
     const addBoard = () => {
         let object = {
             title: '',
-            select: ''
+            select: '',
+            tasks:[{}],
         }
 
         setboardFields([...boardFields, object])

@@ -38,16 +38,51 @@ function Form() {
         if (loading) return;
         setLoading(true);
 
-        const docRef = await addDoc(collection(db, "tasks"), {
-            id: session.user.uid,
-            username: session.user.name,
-            userImg: session.user.image,
-            tag: session.user.tag,
-            title: taskTitle,
-            date: taskDate,
-            details: taskDetails,
-            timestamp: serverTimestamp(),
+        // const docRef = await addDoc(collection(db, "tasks"), {
+        //     id: session.user.uid,
+        //     username: session.user.name,
+        //     userImg: session.user.image,
+        //     tag: session.user.tag,
+        //     title: taskTitle,
+        //     date: taskDate,
+        //     details: taskDetails,
+        //     timestamp: serverTimestamp(),
+        // });
+
+
+        const docRef = await updateDoc(collection(db, "projects", "boards"), {
+
+            tasks: [{
+                id: session.user.uid,
+                username: session.user.name,
+                userImg: session.user.image,
+                tag: session.user.tag,
+                title: taskTitle,
+                date: taskDate,
+                details: taskDetails,
+                timestamp: serverTimestamp(),
+            }]
         });
+
+
+        //    const docRef = await db.collection("projects");
+        //     docRef.update({
+
+        //         boards:
+
+        //     })
+        //    {
+        //     id: session.user.uid,
+        //     username: session.user.name,
+        //     userImg: session.user.image,
+        //     tag: session.user.tag,
+        //     title: taskTitle,
+        //     date: taskDate,
+        //     details: taskDetails,
+        //     timestamp: serverTimestamp(),
+        // });
+
+
 
         const fileRef = ref(storage, `tasks/${docRef.id}/file`);
 
