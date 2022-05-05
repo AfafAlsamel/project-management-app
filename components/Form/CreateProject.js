@@ -19,6 +19,11 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
+import { useRecoilValue } from "recoil";
+import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
+// import { getProjectsState } from "../atoms/projectAtom";
+
+
 
 
 
@@ -36,11 +41,9 @@ function CreateProject() {
     const [loading, setLoading] = useState(false);
 
 
+    const project = useRecoilValue(getProjectsState);
+    const isNew = useRecoilValue(isNewProject);
 
-
-
-
-    const dbInstance = collection(db, 'boards ');
 
 
 
@@ -125,7 +128,7 @@ function CreateProject() {
                     <div className="space-y-9">
                         <SectionTitle icon={<CogIcon className="w-5 h-5 text-white" />} text="Project settings" />
                         <Field
-                            fieldValue={projectTitle}
+                            fieldValue={isNew ? projectTitle : project.title}
                             fieldFunc={(e) => setprojectTitle(e.target.value)}
                             fieldType="text"
                             fieldId="project title"
@@ -135,7 +138,7 @@ function CreateProject() {
 
                         <div><label className='text-sm text-gray-100'>Description </label>
                             <textarea
-                                value={projectDetails}
+                                value={isNew ? projectDetails : project.details}
                                 onChange={(e) => setProjectDetails(e.target.value)}
                                 title="Des"
                                 placeholder="Add project details"
@@ -144,7 +147,7 @@ function CreateProject() {
                         </div>
 
                         <Field
-                            fieldValue={projectData}
+                            fieldValue={isNew ? projectData : project.date}
                             fieldFunc={(e) => setprojectData(e.target.value)}
                             fieldType="date"
                             fieldId="Date"
@@ -170,45 +173,84 @@ function CreateProject() {
                     </div>
 
                     <div class=" w-full max-w-lg">
-                        <form class="flex flex-col space-y-4 overflow-y-auto h-80 max-h-fit">
-                            {Object.values(boardFields).map((form, index) => {
-                                return (
-                                    <div className="w-full space-y-5 p-4 border border-black-300  rounded" key={index}>
-                                        <div className="space-y-3">
-                                            <div class="flex items-center justify-between">
-                                                <h2 className='text-white font-bold'>New board</h2>
-                                                <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
-                                                    onClick={submit} >Save</button>
+                        {isNew ? (
+                            <form class="flex flex-col space-y-4 overflow-y-auto h-80 max-h-fit">
+                                {Object.values(boardFields).map((board, index) => {
+                                    return (
+                                        <div className="w-full space-y-5 p-4 border border-black-300  rounded" key={index}>
+                                            <div className="space-y-3">
+                                                <div class="flex items-center justify-between">
+                                                    <h2 className='text-white font-bold'>New board</h2>
+                                                    <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
+                                                        onClick={submit} >Save</button>
 
+                                                </div>
+                                                <Field
+                                                    fieldValue={board.name}
+                                                    fieldFunc={event => handleFormChange(event, index)}
+                                                    fieldType="text"
+                                                    fieldId="board Title"
+                                                    title="Title"
+                                                    name="title"
+                                                    placeHolder="Ex: today todos checklist"
+                                                />
                                             </div>
-                                            <Field
-                                                fieldValue={form.name}
-                                                fieldFunc={event => handleFormChange(event, index)}
-                                                fieldType="text"
-                                                fieldId="board Title"
-                                                title="Title"
-                                                name="title"
-                                                placeHolder="Ex: today todos checklist"
-                                            />
-                                        </div>
-                                        <div class="flex items-center justify-between ">
-                                            <label className='text-gray-100'>Methdology : </label>
-                                            <select class="bg-black-100 appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                                                value={form.select}
-                                                onChange={event => handleFormChange(event, index)}
-                                                name="select"
+                                            <div class="flex items-center justify-between ">
+                                                <label className='text-gray-100'>Methdology : </label>
+                                                <select class="bg-black-100 appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                                                    value={board.select}
+                                                    onChange={event => handleFormChange(event, index)}
+                                                    name="select"
 
-                                            >
-                                                <option>Scrum </option>
-                                                <option>WaterFull</option>
-                                                <option>Agile</option>
-                                            </select>
-                                        </div>
+                                                >
+                                                    <option>Scrum </option>
+                                                    <option>WaterFull</option>
+                                                    <option>Agile</option>
+                                                </select>
+                                            </div>
 
+                                        </div>
+                                    )
+                                })
+
+                                }
+                            </form>) : (
+                            Object.values(project.boards).map((board, index) =>
+                                <div className="w-full space-y-5 p-4 border border-black-300  rounded" key={index}>
+                                    <div className="space-y-3">
+                                        <div class="flex items-center justify-between">
+                                            <h2 className='text-white font-bold'>New board</h2>
+                                            <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
+                                                onClick={submit} >Save</button>
+
+                                        </div>
+                                        <Field
+                                            fieldValue={board.title}
+                                            // fieldFunc={event => handleFormChange(event, index)}
+                                            fieldType="text"
+                                            fieldId="board Title"
+                                            title="Title"
+                                            name="title"
+                                            placeHolder="Ex: today todos checklist"
+                                        />
                                     </div>
-                                )
-                            })}
-                        </form>
+                                    <div class="flex items-center justify-between ">
+                                        <label className='text-gray-100'>Methdology : </label>
+                                        <select class="bg-black-100 appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                                            value={board.select}
+                                            // onChange={event => handleFormChange(event, index)}
+                                            name="select"
+
+                                        >
+                                            <option>Scrum </option>
+                                            <option>WaterFull</option>
+                                            <option>Agile</option>
+                                        </select>
+                                    </div>
+
+                                </div>
+                            )
+                        )}
 
                     </div>
 

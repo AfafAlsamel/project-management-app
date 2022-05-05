@@ -21,7 +21,6 @@ export default function Home({ trendingResults, followResults, providers }) {
   return (
     <Layout>
 
-      <Board />
 
     </Layout>
   );
