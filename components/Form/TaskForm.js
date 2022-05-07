@@ -27,7 +27,7 @@ function Form() {
     const [taskDetails, setTaskDetails] = useState("");
     const [taskTitle, setTaskTitle] = useState("");
     const [taskDate, setTaskDate] = useState("");
-
+    const [taskPriority, setTaskPriority] =useState("");
 
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -59,6 +59,7 @@ function Form() {
                 tag: session.user.tag,
                 title: taskTitle,
                 date: taskDate,
+                priority: taskPriority,
                 details: taskDetails,
                 timestamp: serverTimestamp(),
             }]
@@ -101,6 +102,7 @@ function Form() {
         setTaskDate("");
         setTaskDetails("");
         setSelectedFile(null);
+        setTaskPriority("");
     };
 
 
@@ -123,7 +125,7 @@ function Form() {
 
 
     return (
-        <div className="space-y-4 divide-y divide-black-300">
+        <div className="space-y-4 divide-y divide-black-300 cursor-default">
             <div className="flex space-x-4 divide-x divide-black-300">
                 <div className="w-1/3 space-y-8 p-4">
 
@@ -146,6 +148,17 @@ function Form() {
                             fieldId="Date"
                             title="Date"
                         />
+                         <div class="flex items-center justify-between ">
+                        <label className='text-gray-100'>Priority : </label>
+                        <select class="bg-black-100 appearance-none w-30 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                            value={taskPriority}
+                            onChange={(e) => setTaskPriority(e.target.value)}
+                            name="select"  >
+                                <option>High </option>
+                                <option>medium</option>
+                                <option>Low</option>
+                       </select>
+                 </div>
                     </div>
 
 

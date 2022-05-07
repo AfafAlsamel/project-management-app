@@ -50,7 +50,7 @@ function Layout({ children }) {
   );
 
   return (
-    <div className="min-w-full min-h-screen  h-screen overflow-hidden bg-black-100">
+    <div className="min-w-full min-h-screen  h-screen overflow-hidden bg-black-100 cursor-default ">
       <TopBar
         userName={session.user.name}
         userImage={session.user.image}
