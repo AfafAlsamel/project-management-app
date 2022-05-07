@@ -50,7 +50,7 @@ function Form() {
         // });
 
 
-        const docRef = await updateDoc(collection(db, "projects", "boards"), {
+        const docRef = await updateDoc(collection(db, "projects","boards"), {
 
             tasks: [{
                 id: session.user.uid,

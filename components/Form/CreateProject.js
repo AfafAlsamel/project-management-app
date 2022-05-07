@@ -22,7 +22,7 @@ import { useSession } from 'next-auth/react';
 import { useRecoilValue } from "recoil";
 import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
 // import { getProjectsState } from "../atoms/projectAtom";
-
+import Boards from './Boards';
 
 
 
@@ -102,7 +102,6 @@ function CreateProject() {
 
     const submit = (e) => {
         e.preventDefault();
-        console.log(boardFields)
     }
 
     const addBoard = () => {
@@ -160,17 +159,13 @@ function CreateProject() {
 
                 {/*Board section*/}
                 <div className=" justify-between items-center overflow-auto w-1/3 divide-black-300 p-4 space-y-4">
-
                     <div className="flex justify-between">
-
                         <SectionTitle icon={<MdOutlineSpaceDashboard className="w-5 h-5 text-white" />} text="Boards" />
-
                         <button className='flex items-center cursor-pointer text-gray-100 '
                             onClick={addBoard} >
                             <PlusIcon className="w-5 h-5 text-gray-100" />
                             Add
                         </button>
-
                     </div>
 
                     <div class=" w-full max-w-lg">
@@ -183,8 +178,7 @@ function CreateProject() {
                                                 <div class="flex items-center justify-between">
                                                     <h2 className='text-white font-bold'>New board</h2>
                                                     <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
-                                                        onClick={submit} >Save</button>
-
+                                                      onClick={submit} >Save</button>
                                                 </div>
                                                 <Field
                                                     fieldValue={board.name}
@@ -209,7 +203,6 @@ function CreateProject() {
                                                     <option>Agile</option>
                                                 </select>
                                             </div>
-
                                         </div>
                                     )
                                 })

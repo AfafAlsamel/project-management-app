@@ -9,3 +9,8 @@ export const boardTypeState = atom({
   key: "boardTypeState",
   default: "dropIn",
 });
+
+export const isNewwBoard = atom({
+  key: "osNewBoard",
+  default: true,
+});

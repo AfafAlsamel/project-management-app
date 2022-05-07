@@ -17,7 +17,7 @@ import { useRecoilState } from "recoil";
 import { AnimatePresence } from "framer-motion";
 import { getProjectsState, isNewProject, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
 import Board from './Board';
-
+import { boardState , boardTypeState , isNewwBoard} from "../atoms/boardAtoms";
 
 
 function Layout({ children }) {
@@ -27,12 +27,14 @@ function Layout({ children }) {
   const [projectType, setprojectType] = useRecoilState(projectTypeState);
   const [projectItem, setProjectItem] = useRecoilState(getProjectsState);
   const [isNew, setIsNew] = useRecoilState(isNewProject);
-
-
-
-
   const [projects, setProjects] = useState([]);
   const router = useRouter();
+
+
+  const [boards , setBoards] = useState([]);
+  const [boardOpen, setboardOpen] = useRecoilState(boardState);
+  const [boardType, setboardType] = useRecoilState(boardTypeState);
+  const [isNeww, setIsNeww] = useRecoilState(isNewwBoard);
 
 
   // CLEAN
@@ -89,15 +91,20 @@ function Layout({ children }) {
                   {Object.values(project.data().boards).map((board, index) =>
                     <div
                       className="flex mt-2 items-center cursor-pointer"
-                      onClick={() => router.push({
+                      onClick={() => {setIsNeww(true); setboardOpen(true) 
+                        router.push({
                         pathname: router.pathname,
                         query: {...router.query, myqueryparam:`projects/${project.id}/boards/${board.title}`}
-                      })}
-
+                         })
+                      }
+                        }
                     >
                       <ClipboardListIcon className="w-5 h-5 text-gray-100" />
                       {board.title}
-                    </div>)}
+                       
+                    </div>
+                    
+                    )}
                   {/* {project?.data().boards} */}
                 </div>
 
@@ -107,8 +114,16 @@ function Layout({ children }) {
           ))
         } />
       <main className="pl-40 pt-16 max-w-max">
-        <Board />
+      {
+        <AnimatePresence>
+          {boardOpen && (
+            <Board handleClose={() => setboardOpen(false)} type={boardType}  />
+          )}
+        </AnimatePresence>
+      }
       </main>
+
+
       {
         <AnimatePresence>
           {projectOpen && (
@@ -116,6 +131,7 @@ function Layout({ children }) {
           )}
         </AnimatePresence>
       }
+      
     </div>
   );
 }
