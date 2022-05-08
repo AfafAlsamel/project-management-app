@@ -15,9 +15,15 @@ export const getProjectsState = atom({
   default: {},
 });
 
+
 export const isNewProject = atom({
-  key: "osNewProject",
+  key: "isNewProject",
   default: true,
+});
+
+export const getBoardsState = atom({
+  key: "getBoardsState",
+  default: {},
 });
 
 // export const projectIdState = atom({

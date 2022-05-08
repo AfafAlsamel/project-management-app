@@ -15,7 +15,7 @@ import CreateProject from '../components/Form/CreateProject';
 import Modal from "../components/Modal";
 import { useRecoilState } from "recoil";
 import { AnimatePresence } from "framer-motion";
-import { getProjectsState, isNewProject, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
+import { getBoardsState, getProjectsState, isNewProject, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
 import Board from './Board';
 
 
@@ -26,12 +26,17 @@ function Layout({ children }) {
   const [projectOpen, setprojectOpen] = useRecoilState(projectState);
   const [projectType, setprojectType] = useRecoilState(projectTypeState);
   const [projectItem, setProjectItem] = useRecoilState(getProjectsState);
+  const [selectedBoard, setSelectedBoard] = useRecoilState(getBoardsState);
+
+
   const [isNew, setIsNew] = useRecoilState(isNewProject);
 
 
 
 
   const [projects, setProjects] = useState([]);
+  // const [board, setBoard] = useState([]);
+
   const router = useRouter();
 
 
@@ -46,6 +51,28 @@ function Layout({ children }) {
       ),
     [db]
   );
+
+  // useEffect(
+  //   () =>
+  //     onSnapshot(
+  //       query(
+  //         collection(db, "projects", "boards"),
+  //       ),
+  //       (snapshot) => setBoard(snapshot.docs)
+  //     ),
+  //   [db]
+  // );
+
+  // const onClickBoard = ({ project, board }) => {
+
+  //   router.push({
+  //     pathname: router.pathname,
+  //     query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
+  //   });
+
+
+  // }
+
 
   return (
     <div className="min-w-full min-h-screen  h-screen overflow-hidden bg-black-100">
@@ -77,7 +104,7 @@ function Layout({ children }) {
                     key={project.id} id={project.id}
                   >
                     <ChevronDownIcon className="w-5 h-5 text-white" />
-                    {project?.data().title}
+                    {project?.data().projectDetails.title}
                   </div>
                   <button>
                     <DotsVerticalIcon className="w-5 h-5 text-white" />
@@ -89,12 +116,13 @@ function Layout({ children }) {
                   {Object.values(project.data().boards).map((board, index) =>
                     <div
                       className="flex mt-2 items-center cursor-pointer"
-                      onClick={() => router.push({
-                        pathname: router.pathname,
-                        query: {...router.query, myqueryparam:`projects/${project.id}/boards/${board.title}`}
-                      })}
-
+                      // onClick={() => router.push({
+                      //   pathname: router.pathname,
+                      //   query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
+                      // }) }
+                      onClick={() => {setSelectedBoard(board.columns.name); }}
                     >
+                      {/* <div onClick={() => setSelectedBoard(board.columns)}></div> */}
                       <ClipboardListIcon className="w-5 h-5 text-gray-100" />
                       {board.title}
                     </div>)}
