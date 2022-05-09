@@ -26,9 +26,6 @@ import { projectIdState } from '../../atoms/projectAtoms';
 function Form({ bIndex }) {
     const { data: session } = useSession();
 
-    const [taskDetails, setTaskDetails] = useState("");
-    const [taskTitle, setTaskTitle] = useState("");
-    const [taskDate, setTaskDate] = useState("");
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -61,15 +58,7 @@ function Form({ bIndex }) {
         setLoading(true);
 
         const docRef = await addDoc(collection(db, "tasks"), {
-            //     id: session.user.uid,
-            //     username: session.user.name,
-            //     userImg: session.user.image,
-            //     tag: session.user.tag,
-            //     title: taskTitle,
-            //     date: taskDate,
-            //     details: taskDetails,
-            //     timestamp: serverTimestamp(),
-            // });
+     
 
 
             // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
@@ -93,23 +82,6 @@ function Form({ bIndex }) {
             }
         });
 
-
-        //    const docRef = await db.collection("projects");
-        //     docRef.update({
-
-        //         boards:
-
-        //     })
-        //    {
-        //     id: session.user.uid,
-        //     username: session.user.name,
-        //     userImg: session.user.image,
-        //     tag: session.user.tag,
-        //     title: taskTitle,
-        //     date: taskDate,
-        //     details: taskDetails,
-        //     timestamp: serverTimestamp(),
-        // });
 
 
 
@@ -274,7 +246,7 @@ function Form({ bIndex }) {
             <div className="pt-4">
                 <button
                     className="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default"
-                    disabled={!taskDetails.trim() && !selectedFile}
+                    disabled={!taskFields.details.trim() && !selectedFile}
                     onClick={sendTask}
 
                 >
