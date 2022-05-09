@@ -17,6 +17,7 @@ import { useRecoilState } from "recoil";
 import { AnimatePresence } from "framer-motion";
 import { getBoardsState, getProjectsState, isNewProject, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
 import Board from './Board';
+import { boardState } from '../atoms/boardAtoms';
 
 
 
@@ -27,6 +28,8 @@ function Layout({ children }) {
   const [projectType, setprojectType] = useRecoilState(projectTypeState);
   const [projectItem, setProjectItem] = useRecoilState(getProjectsState);
   const [selectedBoard, setSelectedBoard] = useRecoilState(getBoardsState);
+  const [board, setBoardState] = useRecoilState(boardState) // use RecoilValue "project"
+
 
 
   const [isNew, setIsNew] = useRecoilState(isNewProject);
@@ -116,11 +119,17 @@ function Layout({ children }) {
                   {Object.values(project.data().boards).map((board, index) =>
                     <div
                       className="flex mt-2 items-center cursor-pointer"
-                      // onClick={() => router.push({
-                      //   pathname: router.pathname,
-                      //   query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
-                      // }) }
-                      onClick={() => {setSelectedBoard(board.columns.name); }}
+                      onClick={() => {
+
+                        setBoardState([...project.data().boards]);
+
+                        router.push({
+                          pathname: router.pathname,
+                          query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
+                        });
+                      }
+                      }
+
                     >
                       {/* <div onClick={() => setSelectedBoard(board.columns)}></div> */}
                       <ClipboardListIcon className="w-5 h-5 text-gray-100" />

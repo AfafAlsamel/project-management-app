@@ -15,6 +15,7 @@ import Modal from "../components/Modal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
 import { getBoardsState } from '../atoms/projectAtoms';
+import { boardState } from '../atoms/boardAtoms';
 
 
 function createGuidId() {
@@ -31,7 +32,7 @@ function Board({ project }) {
     const board = useRecoilValue(getBoardsState);
 
     const [ready, setReady] = useState(false);
-    const [boardData, setBoardData] = useState(board); // use RecoilValue "project"
+    const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
     const [showForm, setShowForm] = useState(false);
     const [selectedBoard, setSelectedBoard] = useState(0);
 
@@ -45,7 +46,7 @@ function Board({ project }) {
             setReady(true);
 
         }
-        console.log(selectedBoard)
+        console.log(boardData)
         
     }, []);
 
@@ -145,7 +146,7 @@ function Board({ project }) {
                     <div className="grid grid-cols-4 gap-5 my-5">
                         {Object.values(boardData).map((board, bIndex) => {
                             return (
-                                <div key={board.name}>
+                                <div key={board.index}>
                                     {/* <p>{board.columns.name}</p> */}
                                     <Droppable droppableId={bIndex.toString()}>
                                         {(provided, snapshot) => (
@@ -161,15 +162,15 @@ function Board({ project }) {
 
                                                     <h4 className=" p-3 flex justify-between items-center mb-2">
                                                         <span className="text-2xl text-white">
-                                                            {board.name}
+                                                            {board.columns?.name}
                                                         </span>
                                                         <DotsVerticalIcon className="w-5 h-5 text-gray-100" />
                                                     </h4>
 
                                                     <div className="overflow-y-auto overflow-x-hidden h-auto"
                                                         style={{ maxHeight: 'calc(100vh - 290px)' }}>
-                                                        {board.tasks.length > 0 &&
-                                                            board.tasks.map((item, iIndex) => {
+                                                        {board.columns.tasks?.length > 0 &&
+                                                            board.columns.tasks.map((item, iIndex) => {
                                                                 return (
                                                                     <CardItem
                                                                         key={item.id}
