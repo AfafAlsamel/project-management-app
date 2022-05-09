@@ -72,11 +72,8 @@ function CreateProject() {
         },
     ])
     const [loading, setLoading] = useState(false);
-
-
     const project = useRecoilValue(getProjectsState);
     const [projectt, editProject] = useRecoilState(getProjectsState);
-
     const isNew = useRecoilValue(isNewProject);
 
 

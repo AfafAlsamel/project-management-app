@@ -15,7 +15,7 @@ import CreateProject from '../components/Form/CreateProject';
 import Modal from "../components/Modal";
 import { useRecoilState } from "recoil";
 import { AnimatePresence } from "framer-motion";
-import { getBoardsState, getProjectsState, isNewProject, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
+import { getBoardsState, getProjectsState, isNewProject, projectIdState, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
 import Board from './Board';
 import { boardState } from '../atoms/boardAtoms';
 
@@ -27,6 +27,7 @@ function Layout({ children }) {
   const [projectOpen, setprojectOpen] = useRecoilState(projectState);
   const [projectType, setprojectType] = useRecoilState(projectTypeState);
   const [projectItem, setProjectItem] = useRecoilState(getProjectsState);
+  const [ProjectIdState, setProjectIdState] = useRecoilState(projectIdState);
   const [selectedBoard, setSelectedBoard] = useRecoilState(getBoardsState);
   const [board, setBoardState] = useRecoilState(boardState) // use RecoilValue "project"
 
@@ -121,6 +122,7 @@ function Layout({ children }) {
                       className="flex mt-2 items-center cursor-pointer"
                       onClick={() => {
 
+                        setProjectIdState([...project.id]);
                         setBoardState([...project.data().boards]);
 
                         router.push({
