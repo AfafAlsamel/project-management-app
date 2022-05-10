@@ -68,7 +68,7 @@ function CardItem({ data, index }) {
               </div>
             </div>
 
-            <ul className="flex space-x-3">
+            {/* <ul className="flex space-x-3">
               {data.assignees.map((ass, index) => {
                 return (
                   <li key={index}>
@@ -90,7 +90,7 @@ function CardItem({ data, index }) {
                   <PlusIcon className="w-5 h-5 text-white" />
                 </button>
               </li>
-            </ul>
+            </ul> */}
           </div>
         </div>
 

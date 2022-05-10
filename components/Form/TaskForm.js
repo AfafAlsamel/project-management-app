@@ -23,7 +23,7 @@ import { useSession } from 'next-auth/react';
 import { useRecoilState } from 'recoil';
 import { projectIdState } from '../../atoms/projectAtoms';
 
-function Form({ bIndex }) {
+function Form({ bIndex, selectedColumn }) {
     const { data: session } = useSession();
 
     const [selectedFile, setSelectedFile] = useState(null);
@@ -57,28 +57,24 @@ function Form({ bIndex }) {
         if (loading) return;
         setLoading(true);
 
-        const docRef = await addDoc(collection(db, "tasks"), {
-     
+        // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), {
 
+        // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
 
-            // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
+        const taskRef = await db.collection("projects").doc(projectId);
+        // taskRef.whereArrayContains("boards", Dev board).get()
+        taskRef.push({
+            
 
-            // const docRef = await updateDoc(collection(db, "tasks", "JX8DHjCzexJh309HUlIZ"), {
-
-
-
-
-
-            tasks: {
-                id: serverTimestamp(),
-                // username: session.user.name,
-                // userImg: session.user.image,
-                // tag: session.user.tag,
-                priority: '0',
-                title: taskFields.title,
-                date: taskFields.date,
-                details: taskFields.details,
-                attachment: '0'
+            columns: {
+                name: 'backlog',
+                tasks: {
+                    priority: '0',
+                    title: taskFields.title,
+                    date: taskFields.date,
+                    details: taskFields.details,
+                    attachment: '0'
+                }
             }
         });
 

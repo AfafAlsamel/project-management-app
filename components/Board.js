@@ -35,6 +35,8 @@ function Board({ project }) {
     const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
     const [showForm, setShowForm] = useState(false);
     const [selectedBoard, setSelectedBoard] = useState(0);
+    const [selectedColumn, setSelectedColumn] = useState({});
+
 
 
     const [modalOpen, setModalOpen] = useRecoilState(modalState)
@@ -188,6 +190,7 @@ function Board({ project }) {
                                                         data-id={bIndex}
                                                         onClick={() => {
                                                             {(e) => onTextAreaKeyPress(e)};
+                                                            setSelectedColumn(board.columns.tasks);
                                                             setSelectedBoard(bIndex);
                                                             setModalOpen(true);
                                                             setModalType("dropIn");
@@ -213,7 +216,7 @@ function Board({ project }) {
             {
                 <AnimatePresence>
                     {modalOpen && (
-                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form bIndex={selectedBoard}/>} />
+                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form bIndex={selectedBoard} column={selectedColumn}/>} />
                     )}
                 </AnimatePresence>
             }
