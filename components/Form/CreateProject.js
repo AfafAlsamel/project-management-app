@@ -19,7 +19,7 @@ import { BsFillPersonLinesFill } from "react-icons/bs";
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
-import { useRecoilValue } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
 // import { getProjectsState } from "../atoms/projectAtom";
 import Boards from './Boards';
@@ -36,34 +36,77 @@ function CreateProject() {
     const [projectTitle, setprojectTitle] = useState("");
     const [projectData, setprojectData] = useState("");
     const [boardFields, setboardFields] = useState([
-        { title: '', select: '' , tasks: [{}]},
+        {
+            // title: '',
+            // select: '',
+            columns: {
+                name: 'backlog',
+                tasks: [
+                    {
+                        "id": 1,
+                        "priority": 0,
+                        "title": "Company website redesign.",
+                        "chat": 1,
+                        "attachment": 2,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "priority": 2,
+                        "title": "Mobile app login process prototype.",
+                        "chat": 10,
+                        "attachment": 4,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
+                            }
+                        ]
+                    }
+                ]
+            }
+
+        },
     ])
     const [loading, setLoading] = useState(false);
 
 
     const project = useRecoilValue(getProjectsState);
+    const [projectt, editProject] = useRecoilState(getProjectsState);
+
     const isNew = useRecoilValue(isNewProject);
 
 
+    const [projectFields, setProjectFields] = useState({
+        title: '',
+        details: '',
+        date: '',
+    })
 
 
+    function handleChange(e) {
+        const value = e.target.value;
 
-    const handleSelect = (e) => {
 
-        console.log(e);
-
-        setValue(e)
-
+        setProjectFields({
+            ...projectFields,
+            [e.target.name]: value
+        });
     }
 
+
     const sendProject = async () => {
+        console.log(projectFields)
+
+
         if (loading) return;
         setLoading(true);
         const docRef = await addDoc(collection(db, "projects"), {
             id: session.user.uid,
-            title: projectTitle,
-            date: projectData,
-            details: projectDetails,
+            projectDetails: projectFields,
             boards: boardFields,
             timestamp: serverTimestamp(),
         });
@@ -72,13 +115,104 @@ function CreateProject() {
 
 
         setLoading(false);
-        setprojectTitle("");
-        setprojectData("");
-        setProjectDetails("");
-        setboardFields({title: '', select: '', tasks: [{}]})
+        setProjectFields({
+            title: '',
+            details: '',
+            date: '',
+        })
+        setboardFields({
+            // title: '',
+            // select: '',
+            columns: {
+                name: 'backlog',
+                tasks: [
+                    {
+                        "id": 1,
+                        "priority": 0,
+                        "title": "Company website redesign.",
+                        "chat": 1,
+                        "attachment": 2,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "priority": 2,
+                        "title": "Mobile app login process prototype.",
+                        "chat": 10,
+                        "attachment": 4,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
+                            }
+                        ]
+                    }
+                ]
+            }
+        })
 
 
     };
+
+
+    const updateProject = async () => {
+
+        if (loading) return;
+        setLoading(true);
+        const docRef = await updateDoc(collection(db, "projects"), {
+            projectDetails: projectFields,
+            boards: boardFields,
+            timestamp: serverTimestamp(),
+        });
+
+        // const dbInstance = collection(db, `projects/${docRef.id}/board`);
+
+
+        setLoading(false);
+        setProjectFields({
+            title: '',
+            details: '',
+            date: '',
+        })
+        setboardFields({
+            // title: '',
+            // select: '',
+            columns: {
+                name: 'backlog',
+                tasks: [
+                    {
+                        "id": 1,
+                        "priority": 0,
+                        "title": "Company website redesign.",
+                        "chat": 1,
+                        "attachment": 2,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "priority": 2,
+                        "title": "Mobile app login process prototype.",
+                        "chat": 10,
+                        "attachment": 4,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
+                            }
+                        ]
+                    }
+                ]
+            }
+        })
+
+    };
+
 
     {/*const sendBoard = async () => {
         if (loading) return;
@@ -94,7 +228,10 @@ function CreateProject() {
     };
 */}
 
-    const handleFormChange = (event, index) => {
+
+
+
+    const handleBoardChange = (event, index) => {
         let data = [...boardFields];
         data[index][event.target.name] = event.target.value;
         setboardFields(data);
@@ -102,13 +239,45 @@ function CreateProject() {
 
     const submit = (e) => {
         e.preventDefault();
+        console.log(boardFields)
+        console.log(projectFields)
+
+
     }
 
     const addBoard = () => {
         let object = {
-            title: '',
-            select: '',
-            tasks:[{}],
+            // title: '',
+            // select: '',
+            columns: {
+                name: 'backlog',
+                tasks: [
+                    {
+                        "id": 1,
+                        "priority": 0,
+                        "title": "Company website redesign.",
+                        "chat": 1,
+                        "attachment": 2,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
+                            }
+                        ]
+                    },
+                    {
+                        "id": 2,
+                        "priority": 2,
+                        "title": "Mobile app login process prototype.",
+                        "chat": 10,
+                        "attachment": 4,
+                        "assignees": [
+                            {
+                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
+                            }
+                        ]
+                    }
+                ],
+            }
         }
 
         setboardFields([...boardFields, object])
@@ -124,37 +293,44 @@ function CreateProject() {
             <div className="flex space-x-4 divide-x divide-black-300">
 
                 {/*Project section*/}
+
+                {/* <form onSubmit={submit}> */}
                 <div className="w-1/3 space-y-8 p-5">
                     <div className="space-y-9 cursor-default">
                         <SectionTitle icon={<CogIcon className="w-5 h-5 text-white" />} text="Project settings" />
                         <Field
-                            fieldValue={isNew ? projectTitle : project.title}
-                            fieldFunc={(e) => setprojectTitle(e.target.value)}
+                            fieldValue={isNew ? projectFields.title : project.projectDetails.title}
+                            fieldFunc={(e) => handleChange(e)}
                             fieldType="text"
                             fieldId="project title"
                             title="project title"
                             placeHolder="Ex: today todos checklist"
+                            name="title"
                         />
 
                         <div><label className='text-sm text-gray-100 cursor-default'>Description </label>
                             <textarea
-                                value={isNew ? projectDetails : project.details}
-                                onChange={(e) => setProjectDetails(e.target.value)}
+                                value={isNew ? projectFields.details : project.projectDetails.details}
+                                onChange={(e) => handleChange(e)}
                                 title="Des"
                                 placeholder="Add project details"
-                                className="bg-transparent border-b border-black-300 outline-none text-white text-lg tracking-wide w-full max-h-[500px] min-h-[50px]">
+                                className="bg-transparent border-b border-black-300 outline-none text-white text-lg tracking-wide w-full max-h-[500px] min-h-[50px]"
+                                name="details"
+                            >
                             </textarea>
                         </div>
 
                         <Field
-                            fieldValue={isNew ? projectData : project.date}
-                            fieldFunc={(e) => setprojectData(e.target.value)}
+                            fieldValue={isNew ? projectFields.date : project.projectDetails.date}
+                            fieldFunc={(e) => handleChange(e)}
                             fieldType="date"
                             fieldId="Date"
                             title="Duration"
+                            name="date"
                         />
                     </div>
                 </div>
+                {/* </form> */}
 
 
                 {/*Board section*/}
@@ -182,7 +358,7 @@ function CreateProject() {
                                                 </div>
                                                 <Field
                                                     fieldValue={board.name}
-                                                    fieldFunc={event => handleFormChange(event, index)}
+                                                    fieldFunc={event => handleBoardChange(event, index)}
                                                     fieldType="text"
                                                     fieldId="board Title"
                                                     title="Title"
@@ -194,7 +370,7 @@ function CreateProject() {
                                                 <label className='text-gray-100'>Methdology : </label>
                                                 <select class="bg-black-100 cursor-pointer appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                                     value={board.select}
-                                                    onChange={event => handleFormChange(event, index)}
+                                                    onChange={event => handleBoardChange(event, index)}
                                                     name="select"
 
                                                 >
@@ -220,7 +396,7 @@ function CreateProject() {
                                         </div>
                                         <Field
                                             fieldValue={board.title}
-                                            // fieldFunc={event => handleFormChange(event, index)}
+                                            // fieldFunc={event => handleBoardChange(event, index)}
                                             fieldType="text"
                                             fieldId="board Title"
                                             title="Title"
@@ -232,7 +408,7 @@ function CreateProject() {
                                         <label className='text-gray-100'>Methdology : </label>
                                         <select class="bg-black-100 appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
                                             value={board.select}
-                                            // onChange={event => handleFormChange(event, index)}
+                                            // onChange={event => handleBoardChange(event, index)}
                                             name="select"
 
                                         >
@@ -262,8 +438,8 @@ function CreateProject() {
             <div className="pt-4">
                 <button
                     className="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default"
-                    disabled={!projectDetails.trim()}
-                    onClick={sendProject} >
+                    disabled={!projectFields.title.trim()}
+                    onClick={isNew ? sendProject : updateProject} >
                     Save project
                 </button>
             </div>

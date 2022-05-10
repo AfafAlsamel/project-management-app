@@ -12,8 +12,9 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { useEffect, useState } from "react";
 import Form from "../components/Form/TaskForm";
 import Modal from "../components/Modal";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue } from "recoil";
 import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
+import { getBoardsState } from '../atoms/projectAtoms';
 
 
 function createGuidId() {
@@ -24,10 +25,13 @@ function createGuidId() {
 }
 
 
-function Board({boardType}) {
+function Board({ project }) {
+
+
+    const board = useRecoilValue(getBoardsState);
 
     const [ready, setReady] = useState(false);
-    const [boardData, setBoardData] = useState(BoardData); // use RecoilValue "project"
+    const [boardData, setBoardData] = useState(board); // use RecoilValue "project"
     const [showForm, setShowForm] = useState(false);
     const [selectedBoard, setSelectedBoard] = useState(0);
 
@@ -39,7 +43,10 @@ function Board({boardType}) {
     useEffect(() => {
         if (process.browser) {
             setReady(true);
+
         }
+        console.log(selectedBoard)
+        
     }, []);
 
     const onDragEnd = (re) => {
@@ -86,13 +93,13 @@ function Board({boardType}) {
     }
 
     return (
-            <div className="p-10 flex flex-col h-screen">
-                {/* Board header */}
-                <div className="flex flex-initial justify-between">
-                    <div className="flex items-center">
-                        <h4 className="text-4xl font-bold text-gray-100">Kanban board</h4>
-                    </div>
-                    {/* 
+        <div className="p-10 flex flex-col h-screen">
+            {/* Board header */}
+            <div className="flex flex-initial justify-between">
+                <div className="flex items-center">
+                    <h4 className="text-4xl font-bold text-gray-100">Kanban board</h4>
+                </div>
+                {/* 
             <ul className="flex space-x-3">
               <li>
                 <Image
@@ -130,80 +137,81 @@ function Board({boardType}) {
                 </button>
               </li>
             </ul> */}
-                </div>
+            </div>
 
-                {/* Board columns */}
-                {ready && (
-                    <DragDropContext onDragEnd={onDragEnd}>
-                        <div className="grid grid-cols-4 gap-5 my-5">
-                            {boardData.map((board, bIndex) => {
-                                return (
-                                    <div key={board.name}>
-                                        <Droppable droppableId={bIndex.toString()}>
-                                            {(provided, snapshot) => (
+            {/* Board columns */}
+            {ready && (
+                <DragDropContext onDragEnd={onDragEnd}>
+                    <div className="grid grid-cols-4 gap-5 my-5">
+                        {Object.values(boardData).map((board, bIndex) => {
+                            return (
+                                <div key={board.name}>
+                                    {/* <p>{board.columns.name}</p> */}
+                                    <Droppable droppableId={bIndex.toString()}>
+                                        {(provided, snapshot) => (
+                                            <div
+                                                {...provided.droppableProps}
+                                                ref={provided.innerRef}
+                                            >
                                                 <div
-                                                    {...provided.droppableProps}
-                                                    ref={provided.innerRef}
-                                                >
-                                                    <div
-                                                        className={`bg-black-100 rounded-md shadow-md
+                                                    className={`bg-black-100 rounded-md shadow-md
                               flex flex-col relative overflow-hidden
                               ${snapshot.isDraggingOver && "bg-black-200"}`}
-                                                    >
+                                                >
 
-                                                        <h4 className=" p-3 flex justify-between items-center mb-2">
-                                                            <span className="text-2xl text-white">
-                                                                {board.name}
-                                                            </span>
-                                                            <DotsVerticalIcon className="w-5 h-5 text-gray-100" />
-                                                        </h4>
+                                                    <h4 className=" p-3 flex justify-between items-center mb-2">
+                                                        <span className="text-2xl text-white">
+                                                            {board.name}
+                                                        </span>
+                                                        <DotsVerticalIcon className="w-5 h-5 text-gray-100" />
+                                                    </h4>
 
-                                                        <div className="overflow-y-auto overflow-x-hidden h-auto"
-                                                            style={{ maxHeight: 'calc(100vh - 290px)' }}>
-                                                            {board.items.length > 0 &&
-                                                                board.items.map((item, iIndex) => {
-                                                                    return (
-                                                                        <CardItem
-                                                                            key={item.id}
-                                                                            data={item}
-                                                                            index={iIndex}
-                                                                            className="m-3"
-                                                                        />
-                                                                    );
-                                                                })}
-                                                            {provided.placeholder}
-                                                        </div>
-
-
-                                                        <button
-                                                            className="flex justify-center items-center my-3 space-x-2 text-lg"
-                                                            onClick={() => { setSelectedBoard(bIndex); setModalOpen(true); setModalType("dropIn"); }}
-                                                        >
-                                                            <span className="text-gray-100">Add task</span>
-                                                            <PlusCircleIcon className="w-5 h-5 text-gray-100" />
-                                                        </button>
-
-
-
+                                                    <div className="overflow-y-auto overflow-x-hidden h-auto"
+                                                        style={{ maxHeight: 'calc(100vh - 290px)' }}>
+                                                        {board.tasks.length > 0 &&
+                                                            board.tasks.map((item, iIndex) => {
+                                                                return (
+                                                                    <CardItem
+                                                                        key={item.id}
+                                                                        data={item}
+                                                                        index={iIndex}
+                                                                        className="m-3"
+                                                                    />
+                                                                );
+                                                            })}
+                                                        {provided.placeholder}
                                                     </div>
-                                                </div>
-                                            )}
-                                        </Droppable>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </DragDropContext>
-                )}
 
-                {
-                    <AnimatePresence>
-                        {modalOpen && (
-                            <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form />} />
-                        )}
-                    </AnimatePresence>
-                }
-            </div>
+
+                                                    <button
+                                                        className="flex justify-center items-center my-3 space-x-2 text-lg"
+                                                        onClick={() => { setSelectedBoard(bIndex); setModalOpen(true); setModalType("dropIn"); }}
+                                                    >
+                                                        <span className="text-gray-100">Add task</span>
+                                                        <PlusCircleIcon className="w-5 h-5 text-gray-100" />
+                                                    </button>
+
+
+
+                                                </div>
+                                            </div>
+                                        )}
+                                    </Droppable>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </DragDropContext>
+            )}
+
+            {
+                <AnimatePresence>
+                    {modalOpen && (
+                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form />} />
+                    )}
+                </AnimatePresence>
+            }
+        </div>
     )
 }
 

@@ -18,6 +18,7 @@ function CardItem({ data, index }) {
 
   const [modalOpen, setModalOpen] = useRecoilState(modalState)
   const [modalType, setModalType] = useRecoilState(modalTypeState)
+  
 
   // <div onClick={() => {
   //   setModalOpen(true);

@@ -13,12 +13,15 @@ import { useEffect, useState } from "react";
 import { useRecoilState } from "recoil";
 import Layout from "../../../../components/Layout";
 import Login from '../../../../components/Login';
+import Board from '../../../../components/Board';
 
 
 
 function projectPage({trendingResults, followResults, providers }) {
     const { data: session } = useSession();
-    const [project, setProject] = useState();
+    const [boards, setBoards] = useState();
+    const [board, setBoard] = useState([]);
+
 
     const router = useRouter();
     const { projectId, boardId } = router.query;
@@ -27,9 +30,21 @@ function projectPage({trendingResults, followResults, providers }) {
     useEffect(
         () =>
             onSnapshot(doc(db, "projects", projectId, "boards", boardId), (snapshot) => {
-                setProject(snapshot.data());
+                setBoard(snapshot.data());
             }),
         [db]
+    );
+
+
+    useEffect(
+      () =>
+        onSnapshot(
+          query(
+            collection(db, "projects", id, "boards"),
+          ),
+          (snapshot) => setBoard(snapshot.docs)
+        ),
+      [db, id]
     );
 
 
@@ -39,10 +54,9 @@ function projectPage({trendingResults, followResults, providers }) {
 
     return (
 
-        <Layout>
+                  <Board board={board}/>
 
-
-        </Layout>
+        
     )
 }
 
