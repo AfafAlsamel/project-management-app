@@ -20,17 +20,44 @@ import {
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
+import { useRecoilState } from 'recoil';
+import { projectIdState } from '../../atoms/projectAtoms';
 
-function Form() {
+function Form({ bIndex, selectedColumn }) {
     const { data: session } = useSession();
 
+<<<<<<< HEAD
     const [taskDetails, setTaskDetails] = useState("");
     const [taskTitle, setTaskTitle] = useState("");
     const [taskDate, setTaskDate] = useState("");
     const [taskPriority, setTaskPriority] =useState("");
 
+=======
+>>>>>>> ac4b95f4109a6c14f675a6d08927b68f86832d2d
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
+
+    const [projectId, setProjectId] = useRecoilState(projectIdState);
+
+    const [taskFields, setTaskFields] = useState({
+        id: '',
+        priority: '0',
+        title: '',
+        details: '',
+        date: '',
+        attachment: '0',
+
+    })
+
+    function handleChange(e) {
+        const value = e.target.value;
+
+
+        setTaskFields({
+            ...taskFields,
+            [e.target.name]: value
+        });
+    }
 
     const filePickerRef = useRef(null);
 
@@ -38,50 +65,27 @@ function Form() {
         if (loading) return;
         setLoading(true);
 
-        // const docRef = await addDoc(collection(db, "tasks"), {
-        //     id: session.user.uid,
-        //     username: session.user.name,
-        //     userImg: session.user.image,
-        //     tag: session.user.tag,
-        //     title: taskTitle,
-        //     date: taskDate,
-        //     details: taskDetails,
-        //     timestamp: serverTimestamp(),
-        // });
+        // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), {
 
+        // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
 
-        const docRef = await updateDoc(collection(db, "projects","boards"), {
+        const taskRef = await db.collection("projects").doc(projectId);
+        // taskRef.whereArrayContains("boards", Dev board).get()
+        taskRef.push({
+            
 
-            tasks: [{
-                id: session.user.uid,
-                username: session.user.name,
-                userImg: session.user.image,
-                tag: session.user.tag,
-                title: taskTitle,
-                date: taskDate,
-                priority: taskPriority,
-                details: taskDetails,
-                timestamp: serverTimestamp(),
-            }]
+            columns: {
+                name: 'backlog',
+                tasks: {
+                    priority: '0',
+                    title: taskFields.title,
+                    date: taskFields.date,
+                    details: taskFields.details,
+                    attachment: '0'
+                }
+            }
         });
 
-
-        //    const docRef = await db.collection("projects");
-        //     docRef.update({
-
-        //         boards:
-
-        //     })
-        //    {
-        //     id: session.user.uid,
-        //     username: session.user.name,
-        //     userImg: session.user.image,
-        //     tag: session.user.tag,
-        //     title: taskTitle,
-        //     date: taskDate,
-        //     details: taskDetails,
-        //     timestamp: serverTimestamp(),
-        // });
 
 
 
@@ -98,9 +102,17 @@ function Form() {
         }
 
         setLoading(false);
-        setTaskTitle("");
-        setTaskDate("");
-        setTaskDetails("");
+        setTaskFields(
+            {
+                id: '',
+                priority: '0',
+                title: '',
+                details: '',
+                date: '',
+                attachment: '0',
+            }
+        )
+
         setSelectedFile(null);
         setTaskPriority("");
     };
@@ -132,21 +144,23 @@ function Form() {
                     <div className="space-y-4">
                         <SectionTitle icon={<CogIcon className="w-5 h-5 text-white" />} text="Task settings" />
                         <Field
-                            fieldValue={taskTitle}
-                            fieldFunc={(e) => setTaskTitle(e.target.value)}
+                            fieldValue={taskFields.title}
+                            fieldFunc={(e) => handleChange(e)}
                             fieldType="text"
                             fieldId="Task title"
                             title="Task title"
                             placeHolder="Ex: today todos checklist"
+                            name="title"
                         />
 
 
                         <Field
-                            fieldValue={taskDate}
-                            fieldFunc={(e) => setTaskDate(e.target.value)}
+                            fieldValue={taskFields.date}
+                            fieldFunc={(e) => handleChange(e)}
                             fieldType="date"
                             fieldId="Date"
                             title="Date"
+                            name="date"
                         />
                          <div class="flex items-center justify-between ">
                         <label className='text-gray-100'>Priority : </label>
@@ -230,11 +244,13 @@ function Form() {
 
                     <div>
                         <textarea
-                            value={taskDetails}
-                            onChange={(e) => setTaskDetails(e.target.value)}
+                            value={taskFields.details}
+                            onChange={(e) => handleChange(e)}
                             rows="20"
                             placeholder="Add tasks details"
-                            className="bg-transparent outline-none text-white text-lg tracking-wide w-full max-h-[500px] min-h-[50px]">
+                            className="bg-transparent outline-none text-white text-lg tracking-wide w-full max-h-[500px] min-h-[50px]"
+                            name="details"
+                        >
 
                         </textarea>
                     </div>
@@ -246,7 +262,7 @@ function Form() {
             <div className="pt-4">
                 <button
                     className="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default"
-                    disabled={!taskDetails.trim() && !selectedFile}
+                    disabled={!taskFields.details.trim() && !selectedFile}
                     onClick={sendTask}
 
                 >

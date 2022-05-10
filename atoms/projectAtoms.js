@@ -26,7 +26,7 @@ export const getBoardsState = atom({
   default: {},
 });
 
-// export const projectIdState = atom({
-//   key: "projectIdState",
-//   default: "",
-// });
+export const projectIdState = atom({
+  key: "projectIdState",
+  default: "",
+});

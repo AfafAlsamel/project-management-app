@@ -15,9 +15,14 @@ import CreateProject from '../components/Form/CreateProject';
 import Modal from "../components/Modal";
 import { useRecoilState } from "recoil";
 import { AnimatePresence } from "framer-motion";
-import { getBoardsState, getProjectsState, isNewProject, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
+import { getBoardsState, getProjectsState, isNewProject, projectIdState, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
 import Board from './Board';
+<<<<<<< HEAD
 import { boardState , boardTypeState , isNewwBoard} from "../atoms/boardAtoms";
+=======
+import { boardState } from '../atoms/boardAtoms';
+
+>>>>>>> ac4b95f4109a6c14f675a6d08927b68f86832d2d
 
 
 function Layout({ children }) {
@@ -26,7 +31,10 @@ function Layout({ children }) {
   const [projectOpen, setprojectOpen] = useRecoilState(projectState);
   const [projectType, setprojectType] = useRecoilState(projectTypeState);
   const [projectItem, setProjectItem] = useRecoilState(getProjectsState);
+  const [ProjectIdState, setProjectIdState] = useRecoilState(projectIdState);
   const [selectedBoard, setSelectedBoard] = useRecoilState(getBoardsState);
+  const [board, setBoardState] = useRecoilState(boardState) // use RecoilValue "project"
+
 
 
   const [isNew, setIsNew] = useRecoilState(isNewProject);
@@ -118,18 +126,18 @@ function Layout({ children }) {
                   {Object.values(project.data().boards).map((board, index) =>
                     <div
                       className="flex mt-2 items-center cursor-pointer"
-                      //onClick={() => {setIsNeww(true); setboardOpen(true) 
-                        //router.push({
-                        //pathname: router.pathname,
-                        //query: {...router.query, myqueryparam:`projects/${project.id}/boards/${board.title}`}
-                        // })
-                     // }
-                       // }
-                      // onClick={() => router.push({
-                      //   pathname: router.pathname,
-                      //   query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
-                      // }) }
-                      onClick={() => {setSelectedBoard(board.columns.name); }}
+                      onClick={() => {
+
+                        setProjectIdState([...project.id]);
+                        setBoardState([...project.data().boards]);
+
+                        router.push({
+                          pathname: router.pathname,
+                          query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
+                        });
+                      }
+                      }
+
                     >
                       {/* <div onClick={() => setSelectedBoard(board.columns)}></div> */}
                       <ClipboardListIcon className="w-5 h-5 text-gray-100" />

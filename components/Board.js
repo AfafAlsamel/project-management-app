@@ -15,6 +15,7 @@ import Modal from "../components/Modal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
 import { getBoardsState } from '../atoms/projectAtoms';
+import { boardState } from '../atoms/boardAtoms';
 
 
 function createGuidId() {
@@ -28,12 +29,14 @@ function createGuidId() {
 function Board({ project }) {
 
 
-    const board = useRecoilValue(getBoardsState);
+    // const board = useRecoilValue(getBoardsState);
 
     const [ready, setReady] = useState(false);
-    const [boardData, setBoardData] = useState(board); // use RecoilValue "project"
+    const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
     const [showForm, setShowForm] = useState(false);
     const [selectedBoard, setSelectedBoard] = useState(0);
+    const [selectedColumn, setSelectedColumn] = useState({});
+
 
 
     const [modalOpen, setModalOpen] = useRecoilState(modalState)
@@ -45,21 +48,21 @@ function Board({ project }) {
             setReady(true);
 
         }
-        console.log(selectedBoard)
-        
+        console.log(boardData)
+
     }, []);
 
     const onDragEnd = (re) => {
         if (!re.destination) return;
         let newBoardData = boardData;
         var dragItem =
-            newBoardData[parseInt(re.source.droppableId)].items[re.source.index];
-        newBoardData[parseInt(re.source.droppableId)].items.splice(
+            newBoardData[parseInt(re.source?.droppableId)]?.items[re.source?.index];
+        newBoardData[parseInt(re.source.droppableId)]?.items.splice(
             re.source.index,
             1
         );
-        newBoardData[parseInt(re.destination.droppableId)].items.splice(
-            re.destination.index,
+        newBoardData[parseInt(re.destination.droppableId)].items?.splice(
+            re?.destination.index,
             0,
             dragItem
         );
@@ -67,13 +70,13 @@ function Board({ project }) {
     };
 
     const onTextAreaKeyPress = (e) => {
-        if (e.keyCode === 13) //Enter
-        {
+
+            setModalOpen(true);
+            setModalType("dropIn");
+            
             const val = e.target.value;
-            if (val.length === 0) {
-                setShowForm(false);
-            }
-            else {
+ 
+  
                 const boardId = e.target.attributes['data-id'].value;
                 const item = {
                     id: createGuidId(),
@@ -88,8 +91,7 @@ function Board({ project }) {
                 setBoardData(newBoardData);
                 setShowForm(false);
                 e.target.value = '';
-            }
-        }
+     
     }
 
     return (
@@ -145,7 +147,7 @@ function Board({ project }) {
                     <div className="grid grid-cols-4 gap-5 my-5">
                         {Object.values(boardData).map((board, bIndex) => {
                             return (
-                                <div key={board.name}>
+                                <div key={board.index}>
                                     {/* <p>{board.columns.name}</p> */}
                                     <Droppable droppableId={bIndex.toString()}>
                                         {(provided, snapshot) => (
@@ -161,15 +163,15 @@ function Board({ project }) {
 
                                                     <h4 className=" p-3 flex justify-between items-center mb-2">
                                                         <span className="text-2xl text-white">
-                                                            {board.name}
+                                                            {board.columns?.name}
                                                         </span>
                                                         <DotsVerticalIcon className="w-5 h-5 text-gray-100" />
                                                     </h4>
 
                                                     <div className="overflow-y-auto overflow-x-hidden h-auto"
                                                         style={{ maxHeight: 'calc(100vh - 290px)' }}>
-                                                        {board.tasks.length > 0 &&
-                                                            board.tasks.map((item, iIndex) => {
+                                                        {board.columns?.tasks?.length > 0 &&
+                                                            board.columns.tasks.map((item, iIndex) => {
                                                                 return (
                                                                     <CardItem
                                                                         key={item.id}
@@ -185,7 +187,14 @@ function Board({ project }) {
 
                                                     <button
                                                         className="flex justify-center items-center my-3 space-x-2 text-lg"
-                                                        onClick={() => { setSelectedBoard(bIndex); setModalOpen(true); setModalType("dropIn"); }}
+                                                        data-id={bIndex}
+                                                        onClick={() => {
+                                                            {(e) => onTextAreaKeyPress(e)};
+                                                            setSelectedColumn(board.columns.tasks);
+                                                            setSelectedBoard(bIndex);
+                                                            setModalOpen(true);
+                                                            setModalType("dropIn");
+                                                        }}
                                                     >
                                                         <span className="text-gray-100">Add task</span>
                                                         <PlusCircleIcon className="w-5 h-5 text-gray-100" />
@@ -207,7 +216,7 @@ function Board({ project }) {
             {
                 <AnimatePresence>
                     {modalOpen && (
-                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form />} />
+                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form bIndex={selectedBoard} column={selectedColumn}/>} />
                     )}
                 </AnimatePresence>
             }
