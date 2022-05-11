@@ -44,7 +44,7 @@ function CreateProject() {
                 tasks: [
                     {
                         "id": 1,
-                        "priority": 0,
+                        "priority": "high",
                         "title": "Company website redesign.",
                         "chat": 1,
                         "attachment": 2,
@@ -56,7 +56,7 @@ function CreateProject() {
                     },
                     {
                         "id": 2,
-                        "priority": 2,
+                        "priority": "high",
                         "title": "Mobile app login process prototype.",
                         "chat": 10,
                         "attachment": 4,
@@ -125,7 +125,7 @@ function CreateProject() {
                 tasks: [
                     {
                         "id": 1,
-                        "priority": 0,
+                        "priority": "high",
                         "title": "Company website redesign.",
                         "chat": 1,
                         "attachment": 2,
@@ -137,7 +137,7 @@ function CreateProject() {
                     },
                     {
                         "id": 2,
-                        "priority": 2,
+                        "priority": "high",
                         "title": "Mobile app login process prototype.",
                         "chat": 10,
                         "attachment": 4,
@@ -182,7 +182,7 @@ function CreateProject() {
                 tasks: [
                     {
                         "id": 1,
-                        "priority": 0,
+                        "priority": "high",
                         "title": "Company website redesign.",
                         "chat": 1,
                         "attachment": 2,
@@ -194,7 +194,7 @@ function CreateProject() {
                     },
                     {
                         "id": 2,
-                        "priority": 2,
+                        "priority": "high",
                         "title": "Mobile app login process prototype.",
                         "chat": 10,
                         "attachment": 4,
@@ -251,7 +251,7 @@ function CreateProject() {
                 tasks: [
                     {
                         "id": 1,
-                        "priority": 0,
+                        "priority": "high",
                         "title": "Company website redesign.",
                         "chat": 1,
                         "attachment": 2,
@@ -263,7 +263,7 @@ function CreateProject() {
                     },
                     {
                         "id": 2,
-                        "priority": 2,
+                        "priority": "high",
                         "title": "Mobile app login process prototype.",
                         "chat": 10,
                         "attachment": 4,
