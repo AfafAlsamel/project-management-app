@@ -32,7 +32,7 @@ function Form({ bIndex, selectedColumn }) {
     
     const [taskFields, setTaskFields] = useState({
         id: '',
-        priority: '0',
+        priority: '',
         title: '',
         details: '',
         date: '',
@@ -63,7 +63,7 @@ function Form({ bIndex, selectedColumn }) {
             columns: arrayUnion({
             name: 'backlog',
             tasks: {
-                priority: '0',
+                priority: taskFields.priority ,
                 title: taskFields.title,
                 date: taskFields.date,
                 details: taskFields.details,
@@ -90,7 +90,7 @@ function Form({ bIndex, selectedColumn }) {
         setTaskFields(
             {
                 id: '',
-                priority: '0',
+                priority: '',
                 title: '',
                 details: '',
                 date: '',
@@ -247,7 +247,7 @@ function Form({ bIndex, selectedColumn }) {
             <div className="pt-4">
                 <button
                     className="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default"
-                    disabled={!taskFields.details.trim() && !selectedFile}
+                    
                     onClick={sendTask}
 
                 >
