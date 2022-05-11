@@ -337,8 +337,9 @@ function CreateProject() {
                         <button className='flex items-center cursor-pointer text-gray-100 '
                             onClick={addBoard} >
                             <PlusIcon className="w-5 h-5 text-gray-100" />
-                            Add
+                            Add Boards
                         </button>
+
                     </div>
 
                     <div class=" w-full max-w-lg">
@@ -428,7 +429,33 @@ function CreateProject() {
 
                 {/*Members section*/}
                 <div className="w-1/3 space-y-8 p-4">
+                <div className="flex justify-between">
                     <SectionTitle icon={<BsFillPersonLinesFill className="w-5 h-5 text-white" />} text="Members" />
+                    <button className='flex items-center cursor-pointer text-gray-100 '
+                             >
+                            <PlusIcon className="w-5 h-5 text-gray-100" />
+                            Add Members
+                        </button>
+                        </div>
+
+                        <div className="w-full space-y-5 p-4 border border-black-300  rounded">
+                                            <div className="space-y-3">
+                                                <div class="flex items-center justify-between">
+                                                    <h2 className='text-white font-bold cursor-default'>Invite </h2>
+                                                    <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
+                                                     >Send</button>
+                                                </div>
+                                                <Field
+                                                    //fieldValue={board.name}
+                                                    //fieldFunc={event => handleBoardChange(event, index)}
+                                                    fieldType="text"
+                                                    fieldId="board Title"
+                                                    title="Enter email"
+                                                    name="title"
+                                                    placeHolder="EX : "
+                                                />
+                                            </div>
+                                            </div>
                 </div>
             </div>
 
