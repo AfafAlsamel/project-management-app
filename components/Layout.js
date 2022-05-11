@@ -17,13 +17,7 @@ import { useRecoilState } from "recoil";
 import { AnimatePresence } from "framer-motion";
 import { getBoardsState, getProjectsState, isNewProject, projectIdState, projectState, projectType, projectTypeState } from "../atoms/projectAtoms";
 import Board from './Board';
-<<<<<<< HEAD
-import { boardState , boardTypeState , isNewwBoard} from "../atoms/boardAtoms";
-=======
 import { boardState } from '../atoms/boardAtoms';
-
->>>>>>> ac4b95f4109a6c14f675a6d08927b68f86832d2d
-
 
 function Layout({ children }) {
   const { data: session } = useSession();
@@ -46,8 +40,8 @@ function Layout({ children }) {
 
   const [boards , setBoards] = useState([]);
   const [boardOpen, setboardOpen] = useRecoilState(boardState);
-  const [boardType, setboardType] = useRecoilState(boardTypeState);
-  const [isNeww, setIsNeww] = useRecoilState(isNewwBoard);
+  //const [boardType, setboardType] = useRecoilState(boardTypeState);
+  //const [isNeww, setIsNeww] = useRecoilState(isNewwBoard);
 
 
   // CLEAN

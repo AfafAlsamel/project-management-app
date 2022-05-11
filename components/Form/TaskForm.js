@@ -15,6 +15,7 @@ import {
     doc,
     serverTimestamp,
     updateDoc,
+    arrayUnion,
 } from "@firebase/firestore";
 
 import Field from '../Field'
@@ -25,20 +26,10 @@ import { projectIdState } from '../../atoms/projectAtoms';
 
 function Form({ bIndex, selectedColumn }) {
     const { data: session } = useSession();
-
-<<<<<<< HEAD
-    const [taskDetails, setTaskDetails] = useState("");
-    const [taskTitle, setTaskTitle] = useState("");
-    const [taskDate, setTaskDate] = useState("");
-    const [taskPriority, setTaskPriority] =useState("");
-
-=======
->>>>>>> ac4b95f4109a6c14f675a6d08927b68f86832d2d
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
-
     const [projectId, setProjectId] = useRecoilState(projectIdState);
-
+    
     const [taskFields, setTaskFields] = useState({
         id: '',
         priority: '0',
@@ -60,38 +51,32 @@ function Form({ bIndex, selectedColumn }) {
     }
 
     const filePickerRef = useRef(null);
-
+    
     const sendTask = async () => {
         if (loading) return;
         setLoading(true);
-
-        // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), {
-
+        // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), 
         // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
-
-        const taskRef = await db.collection("projects").doc(projectId);
-        // taskRef.whereArrayContains("boards", Dev board).get()
-        taskRef.push({
-            
-
-            columns: {
-                name: 'backlog',
-                tasks: {
-                    priority: '0',
-                    title: taskFields.title,
-                    date: taskFields.date,
-                    details: taskFields.details,
-                    attachment: '0'
-                }
-            }
+           
+        const taskRef = collection(db, "projects", projectId);
+        await updateDoc( taskRef, {
+            columns: arrayUnion({
+            name: 'backlog',
+            tasks: {
+                priority: '0',
+                title: taskFields.title,
+                date: taskFields.date,
+                details: taskFields.details,
+                attachment: '0'
+            }})
         });
-
-
-
+        
+    
+        
+        // taskRef.whereArrayContains("boards", Dev board).get()
+        //taskRef.push({
 
         const fileRef = ref(storage, `tasks/${docRef.id}/file`);
-
-
         if (selectedFile) {
             await uploadString(fileRef, selectedFile, "data_url").then(async () => {
                 const downloadURL = await getDownloadURL(fileRef);
@@ -114,7 +99,7 @@ function Form({ bIndex, selectedColumn }) {
         )
 
         setSelectedFile(null);
-        setTaskPriority("");
+       
     };
 
 
@@ -165,8 +150,8 @@ function Form({ bIndex, selectedColumn }) {
                          <div class="flex items-center justify-between ">
                         <label className='text-gray-100'>Priority : </label>
                         <select class="bg-black-100 appearance-none w-30 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                            value={taskPriority}
-                            onChange={(e) => setTaskPriority(e.target.value)}
+                            value={taskFields.priority}
+                            onChange={(e) => handleChange(e)}
                             name="select"  >
                                 <option>High </option>
                                 <option>medium</option>
