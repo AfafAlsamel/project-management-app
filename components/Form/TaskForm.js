@@ -108,7 +108,7 @@ function Form({ bIndex, selectedColumn }) {
             //             attachment: '0'
             //         }]}
             // }],
-            boards:[{
+            boards: [{
                 title: 'f',
                 type: 'd',
                 select:'agile',
