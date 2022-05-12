@@ -29,8 +29,8 @@ function Form({ bIndex, selectedColumn }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projectId, setProjectId] = useRecoilState(projectIdState);
-    
-    const [tasksFields, setTasksFields] = useState([{
+
+    const [tasksFields, setTasksFields] = useState({
         id: '',
         priority: '',
         title: '',
@@ -38,26 +38,38 @@ function Form({ bIndex, selectedColumn }) {
         date: '',
         attachment: '0',
 
-    }])
+    });
+
+    const [tasks, setTasks] = useState({});
 
 
     const handleTaskChange = (e) => {
-        let data = [...tasksFields];
-        data[e.target.name] = e.target.value;
-        setTasksFields(data);
+        // let data = [...tasksFields];
+        // data[e.target.name] = e.target.value;
+        // setTasksFields(data);
+        const value = e.target.value;
+
+
+        setTasksFields({
+            ...tasksFields,
+            [e.target.name]: value
+        });
     }
 
-    const addTask = () => {
+    const addTask = (e) => {
+        e.preventDefault();
+
         let object = {
-            id:'1',
-            priority: tasksFields.priority ,
+            id: '1',
+            priority: tasksFields.priority,
             title: tasksFields.title,
             date: tasksFields.date,
             details: tasksFields.details,
-            chat:'0',
+            chat: '0',
             attachment: '0'
         }
-        setTasksFields([...tasksFields, object]);
+        setTasksFields([...tasks, object]);
+        tasks.push(object);
 
     }
 
@@ -72,26 +84,29 @@ function Form({ bIndex, selectedColumn }) {
     // }
 
     useEffect(() => {
-        console.log(projectId.join(''))
-        console.log(session.user.uid)
-        console.log(pid)
+        console.log(projectId.join(''));
+        console.log(session.user.uid);
+        console.log(pid);
+        console.log(tasksFields);
+        console.log(tasksFields);
+        console.log(tasksFields.details);
 
     }, []);
 
     var pid = projectId.join('');
 
     const filePickerRef = useRef(null);
-    
+
     const sendTask = async () => {
         if (loading) return;
         setLoading(true);
 
         // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), 
         // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
-           
+
         const taskRef = doc(db, "projects", pid);
-        await updateDoc( taskRef, {
-  
+        await updateDoc(taskRef, {
+
             // boards:[{
             //     title: 'f',
             //     type: 'd',
@@ -108,22 +123,23 @@ function Form({ bIndex, selectedColumn }) {
             //             attachment: '0'
             //         }]}
             // }],
-            boards:[{
+            boards: [{
                 title: 'f',
                 type: 'd',
-                select:'agile',
+                select: 'agile',
                 columns: {
                     name: 'backlog',
-                    tasks: [...tasksFields]}
+                    tasks: [{...tasks}] || null
+                }
             }],
 
-           
+
         });
 
-        
-        
-    
-        
+
+
+
+
         // taskRef.whereArrayContains("boards", Dev board).get()
         //taskRef.push({
 
@@ -150,7 +166,7 @@ function Form({ bIndex, selectedColumn }) {
         )
 
         setSelectedFile(null);
-       
+
     };
 
 
@@ -198,17 +214,17 @@ function Form({ bIndex, selectedColumn }) {
                             title="Date"
                             name="date"
                         />
-                         <div class="flex items-center justify-between ">
-                        <label className='text-gray-100'>Priority : </label>
-                        <select class="bg-black-100 appearance-none w-30 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                            value={tasksFields.priority}
-                            onChange={(e) => handleTaskChange(e)}
-                            name="select"  >
+                        <div class="flex items-center justify-between ">
+                            <label className='text-gray-100'>Priority : </label>
+                            <select class="bg-black-100 appearance-none w-30 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
+                                value={tasksFields.priority}
+                                onChange={(e) => handleTaskChange(e)}
+                                name="select"  >
                                 <option>High</option>
                                 <option>medium</option>
                                 <option>Low</option>
-                       </select>
-                 </div>
+                            </select>
+                        </div>
                     </div>
 
 
@@ -300,7 +316,7 @@ function Form({ bIndex, selectedColumn }) {
             <div className="pt-4">
                 <button
                     className="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default"
-                    
+
                     onClick={sendTask}
 
                 >
