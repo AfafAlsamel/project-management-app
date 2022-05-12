@@ -32,50 +32,33 @@ function CreateProject() {
 
     const { data: session } = useSession();
 
-    const [projectDetails, setProjectDetails] = useState("");
-    const [projectTitle, setprojectTitle] = useState("");
-    const [projectData, setprojectData] = useState("");
+    const [loading, setLoading] = useState(false);
+    const project = useRecoilValue(getProjectsState);
+    const [projectt, editProject] = useRecoilState(getProjectsState);
+    const isNew = useRecoilValue(isNewProject);
     const [boardFields, setboardFields] = useState([
         {
-            // title: '',
-            // select: '',
+            title: '',
+            type: '',
             columns: {
-                name: 'backlog',
+                name: "backlog",
                 tasks: [
-                    {
-                        "id": 1,
-                        "priority": "high",
-                        "title": "Company website redesign.",
-                        "chat": 1,
-                        "attachment": 2,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "priority": "high",
-                        "title": "Mobile app login process prototype.",
-                        "chat": 10,
-                        "attachment": 4,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
-                            }
-                        ]
-                    }
+                    // {
+                    //     "id": 1,
+                    //     "priority": "high",
+                    //     "title": "Company website redesign.",
+                    //     "date":"10-5-20",
+                    //     "details": "details",
+                    //     "chat": 10,
+                    //     "attachment": 4,
+                    // },
+                    
                 ]
             }
 
         },
     ])
-    const [loading, setLoading] = useState(false);
-    const project = useRecoilValue(getProjectsState);
-    const [projectt, editProject] = useRecoilState(getProjectsState);
-    const isNew = useRecoilValue(isNewProject);
-
+  
 
     const [projectFields, setProjectFields] = useState({
         title: '',
@@ -118,97 +101,71 @@ function CreateProject() {
             date: '',
         })
         setboardFields({
-            // title: '',
-            // select: '',
-            columns: {
-                name: 'backlog',
-                tasks: [
-                    {
-                        "id": 1,
-                        "priority": "high",
-                        "title": "Company website redesign.",
-                        "chat": 1,
-                        "attachment": 2,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "priority": "high",
-                        "title": "Mobile app login process prototype.",
-                        "chat": 10,
-                        "attachment": 4,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
-                            }
-                        ]
-                    }
-                ]
-            }
-        })
-
-
-    };
-
-
-    const updateProject = async () => {
-
-        if (loading) return;
-        setLoading(true);
-        const docRef = await updateDoc(collection(db, "projects"), {
-            projectDetails: projectFields,
-            boards: boardFields,
-            timestamp: serverTimestamp(),
-        });
-
-        // const dbInstance = collection(db, `projects/${docRef.id}/board`);
-
-
-        setLoading(false);
-        setProjectFields({
             title: '',
-            details: '',
-            date: '',
-        })
-        setboardFields({
-            // title: '',
-            // select: '',
+            type: '',
             columns: {
-                name: 'backlog',
+                name: "backlog",
                 tasks: [
-                    {
-                        "id": 1,
-                        "priority": "high",
-                        "title": "Company website redesign.",
-                        "chat": 1,
-                        "attachment": 2,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "priority": "high",
-                        "title": "Mobile app login process prototype.",
-                        "chat": 10,
-                        "attachment": 4,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
-                            }
-                        ]
-                    }
+                    // {
+                    //     "id": 1,
+                    //     "priority": "high",
+                    //     "title": "Company website redesign.",
+                    //     "date":"10-5-20",
+                    //     "details": "details",
+                    //     "chat": 10,
+                    //     "attachment": 4,
+                    // },
+                   
                 ]
             }
+            
         })
 
+
     };
+
+
+    // const updateProject = async () => {
+
+    //     if (loading) return;
+    //     setLoading(true);
+    //     const docRef = await updateDoc(collection(db, "projects"), {
+    //         projectDetails: projectFields,
+    //         boards: boardFields,
+    //         timestamp: serverTimestamp(),
+    //     });
+
+    //     // const dbInstance = collection(db, `projects/${docRef.id}/board`);
+
+
+    //     setLoading(false);
+    //     setProjectFields({
+    //         title: '',
+    //         details: '',
+    //         date: '',
+    //     })
+    //     setboardFields({
+    //         title: '',
+    //         type: '',
+    //         columns: {
+    //             name: "backlog",
+    //             tasks: [
+                    // {
+                    //     "id": 1,
+                    //     "priority": "high",
+                    //     "title": "Company website redesign.",
+                    //     "date":"10-5-20",
+                    //     "details": "details",
+                    //     "chat": 10,
+                    //     "attachment": 4,
+                       
+                    // },
+                    
+    //             ]
+    //         }
+    //     })
+
+    // };
 
 
     {/*const sendBoard = async () => {
@@ -244,35 +201,13 @@ function CreateProject() {
 
     const addBoard = () => {
         let object = {
-            // title: '',
-            // select: '',
+            title: '',
+            type: '',
             columns: {
-                name: 'backlog',
+                name: "backlog",
                 tasks: [
-                    {
-                        "id": 1,
-                        "priority": "high",
-                        "title": "Company website redesign.",
-                        "chat": 1,
-                        "attachment": 2,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/75.jpg"
-                            }
-                        ]
-                    },
-                    {
-                        "id": 2,
-                        "priority": "high",
-                        "title": "Mobile app login process prototype.",
-                        "chat": 10,
-                        "attachment": 4,
-                        "assignees": [
-                            {
-                                "avt": "https://randomuser.me/api/portraits/men/67.jpg"
-                            }
-                        ]
-                    }
+                   
+  
                 ],
             }
         }
@@ -367,7 +302,7 @@ function CreateProject() {
                                             <div class="flex items-center justify-between ">
                                                 <label className='text-gray-100'>Methdology : </label>
                                                 <select class="bg-black-100 cursor-pointer appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                                                    value={board.select}
+                                                    value={board.type}
                                                     onChange={event => handleBoardChange(event, index)}
                                                     name="select"
 
@@ -463,7 +398,7 @@ function CreateProject() {
                 <button
                     className="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default"
                     disabled={!projectFields.title.trim()}
-                    onClick={isNew ? sendProject : updateProject} >
+                    onClick={sendProject} >
                     Save project
                 </button>
             </div>

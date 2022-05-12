@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import {
     PaperClipIcon,
@@ -30,7 +30,7 @@ function Form({ bIndex, selectedColumn }) {
     const [loading, setLoading] = useState(false);
     const [projectId, setProjectId] = useRecoilState(projectIdState);
     
-    const [taskFields, setTaskFields] = useState({
+    const [tasksFields, setTasksFields] = useState([{
         id: '',
         priority: '',
         title: '',
@@ -38,38 +38,89 @@ function Form({ bIndex, selectedColumn }) {
         date: '',
         attachment: '0',
 
-    })
-
-    function handleChange(e) {
-        const value = e.target.value;
+    }])
 
 
-        setTaskFields({
-            ...taskFields,
-            [e.target.name]: value
-        });
+    const handleTaskChange = (e) => {
+        let data = [...tasksFields];
+        data[e.target.name] = e.target.value;
+        setTasksFields(data);
     }
+
+    const addTask = () => {
+        let object = {
+            id:'1',
+            priority: tasksFields.priority ,
+            title: tasksFields.title,
+            date: tasksFields.date,
+            details: tasksFields.details,
+            chat:'0',
+            attachment: '0'
+        }
+        setTasksFields([...tasksFields, object]);
+
+    }
+
+    // function handleChange(e) {
+    //     const value = e.target.value;
+
+
+    //     setTasksFields({
+    //         ...tasksFields,
+    //         [e.target.name]: value
+    //     });
+    // }
+
+    useEffect(() => {
+        console.log(projectId.join(''))
+        console.log(session.user.uid)
+        console.log(pid)
+
+    }, []);
+
+    var pid = projectId.join('');
 
     const filePickerRef = useRef(null);
     
     const sendTask = async () => {
         if (loading) return;
         setLoading(true);
+
         // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), 
         // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
            
-        const taskRef = collection(db, "projects", projectId);
+        const taskRef = doc(db, "projects", pid);
         await updateDoc( taskRef, {
-            columns: arrayUnion({
-            name: 'backlog',
-            tasks: {
-                priority: taskFields.priority ,
-                title: taskFields.title,
-                date: taskFields.date,
-                details: taskFields.details,
-                attachment: '0'
-            }})
+  
+            // boards:[{
+            //     title: 'f',
+            //     type: 'd',
+            //     select:'agile',
+            //     columns: {
+            //         name: 'backlog',
+            //         tasks: [{
+            //             id:'1',
+            //             priority: tasksFields.priority ,
+            //             title: tasksFields.title,
+            //             date: tasksFields.date,
+            //             details: tasksFields.details,
+            //             chat:'0',
+            //             attachment: '0'
+            //         }]}
+            // }],
+            boards:[{
+                title: 'f',
+                type: 'd',
+                select:'agile',
+                columns: {
+                    name: 'backlog',
+                    tasks: [...tasksFields]}
+            }],
+
+           
         });
+
+        
         
     
         
@@ -87,7 +138,7 @@ function Form({ bIndex, selectedColumn }) {
         }
 
         setLoading(false);
-        setTaskFields(
+        setTasksFields(
             {
                 id: '',
                 priority: '',
@@ -129,8 +180,8 @@ function Form({ bIndex, selectedColumn }) {
                     <div className="space-y-4">
                         <SectionTitle icon={<CogIcon className="w-5 h-5 text-white" />} text="Task settings" />
                         <Field
-                            fieldValue={taskFields.title}
-                            fieldFunc={(e) => handleChange(e)}
+                            fieldValue={tasksFields.title}
+                            fieldFunc={(e) => handleTaskChange(e)}
                             fieldType="text"
                             fieldId="Task title"
                             title="Task title"
@@ -140,8 +191,8 @@ function Form({ bIndex, selectedColumn }) {
 
 
                         <Field
-                            fieldValue={taskFields.date}
-                            fieldFunc={(e) => handleChange(e)}
+                            fieldValue={tasksFields.date}
+                            fieldFunc={(e) => handleTaskChange(e)}
                             fieldType="date"
                             fieldId="Date"
                             title="Date"
@@ -150,10 +201,10 @@ function Form({ bIndex, selectedColumn }) {
                          <div class="flex items-center justify-between ">
                         <label className='text-gray-100'>Priority : </label>
                         <select class="bg-black-100 appearance-none w-30 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                            value={taskFields.priority}
-                            onChange={(e) => handleChange(e)}
+                            value={tasksFields.priority}
+                            onChange={(e) => handleTaskChange(e)}
                             name="select"  >
-                                <option>High </option>
+                                <option>High</option>
                                 <option>medium</option>
                                 <option>Low</option>
                        </select>
@@ -214,6 +265,8 @@ function Form({ bIndex, selectedColumn }) {
                             </div>
                         )}
 
+                        <button onClick={addTask}>save</button>
+
                     </div>
 
 
@@ -229,8 +282,8 @@ function Form({ bIndex, selectedColumn }) {
 
                     <div>
                         <textarea
-                            value={taskFields.details}
-                            onChange={(e) => handleChange(e)}
+                            value={tasksFields.details}
+                            onChange={(e) => handleTaskChange(e)}
                             rows="20"
                             placeholder="Add tasks details"
                             className="bg-transparent outline-none text-white text-lg tracking-wide w-full max-h-[500px] min-h-[50px]"
