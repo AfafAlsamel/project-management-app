@@ -42,18 +42,18 @@ function CreateProject() {
             type: '',
             columns: {
                 name: "backlog",
-                tasks: [
-                    // {
-                    //     "id": 1,
-                    //     "priority": "high",
-                    //     "title": "Company website redesign.",
-                    //     "date":"10-5-20",
-                    //     "details": "details",
-                    //     "chat": 10,
-                    //     "attachment": 4,
-                    // },
+                // tasks: [
+                //     // {
+                //     //     "id": 1,
+                //     //     "priority": "high",
+                //     //     "title": "Company website redesign.",
+                //     //     "date":"10-5-20",
+                //     //     "details": "details",
+                //     //     "chat": 10,
+                //     //     "attachment": 4,
+                //     // },
                     
-                ]
+                // ]
             }
 
         },
@@ -80,6 +80,8 @@ function CreateProject() {
 
     const sendProject = async () => {
         console.log(projectFields)
+        console.log(projectFields.title)
+
 
 
         if (loading) return;
@@ -105,18 +107,7 @@ function CreateProject() {
             type: '',
             columns: {
                 name: "backlog",
-                tasks: [
-                    // {
-                    //     "id": 1,
-                    //     "priority": "high",
-                    //     "title": "Company website redesign.",
-                    //     "date":"10-5-20",
-                    //     "details": "details",
-                    //     "chat": 10,
-                    //     "attachment": 4,
-                    // },
-                   
-                ]
+
             }
             
         })
@@ -205,10 +196,7 @@ function CreateProject() {
             type: '',
             columns: {
                 name: "backlog",
-                tasks: [
-                   
-  
-                ],
+
             }
         }
 
