@@ -29,6 +29,7 @@ function Form({ bIndex, selectedColumn }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projectId, setProjectId] = useRecoilState(projectIdState);
+    
 
     const [tasksFields, setTasksFields] = useState({
         id: '',
@@ -40,7 +41,7 @@ function Form({ bIndex, selectedColumn }) {
 
     });
 
-    const [tasks, setTasks] = useState({});
+    const [tasks, setTasks] = useState([]);
 
 
     const handleTaskChange = (e) => {
@@ -68,8 +69,12 @@ function Form({ bIndex, selectedColumn }) {
             chat: '0',
             attachment: '0'
         }
-        setTasksFields([...tasks, object]);
-        tasks.push(object);
+        console.log(object);
+        let newtasks = [...tasks, object];
+
+        setTasks(newtasks);
+        console.log(tasks);
+
 
     }
 
@@ -84,12 +89,9 @@ function Form({ bIndex, selectedColumn }) {
     // }
 
     useEffect(() => {
-        console.log(projectId.join(''));
-        console.log(session.user.uid);
-        console.log(pid);
-        console.log(tasksFields);
-        console.log(tasksFields);
-        console.log(tasksFields.details);
+
+
+
 
     }, []);
 
@@ -129,7 +131,7 @@ function Form({ bIndex, selectedColumn }) {
                 select: 'agile',
                 columns: {
                     name: 'backlog',
-                    tasks: [{...tasks}] || null
+                    tasks: [...tasks],
                 }
             }],
 
@@ -164,7 +166,7 @@ function Form({ bIndex, selectedColumn }) {
                 attachment: '0',
             }
         )
-
+        setTasks({});
         setSelectedFile(null);
 
     };
