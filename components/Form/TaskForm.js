@@ -15,22 +15,26 @@ import {
     doc,
     serverTimestamp,
     updateDoc,
+    onSnapshot,
     arrayUnion,
 } from "@firebase/firestore";
+
+import { ref as sRef } from 'firebase/storage';
+
 
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
-import { useRecoilState } from 'recoil';
-import { projectIdState } from '../../atoms/projectAtoms';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { getProjectsState, projectIdState, } from '../../atoms/projectAtoms';
+import { boardState } from '../../atoms/boardAtoms';
 
-function Form({ bIndex, selectedColumn }) {
-    const { data: session } = useSession();
+function Form({ columnIndex }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projectId, setProjectId] = useRecoilState(projectIdState);
-    
-
+    const [project, setProject] = useRecoilState(getProjectsState);
+    const boardIndex = useRecoilValue(boardState) // use RecoilValue "project"
     const [tasksFields, setTasksFields] = useState({
         id: '',
         priority: '',
@@ -41,7 +45,6 @@ function Form({ bIndex, selectedColumn }) {
 
     });
 
-    const [tasks, setTasks] = useState([]);
 
 
     const handleTaskChange = (e) => {
@@ -49,16 +52,39 @@ function Form({ bIndex, selectedColumn }) {
         // data[e.target.name] = e.target.value;
         // setTasksFields(data);
         const value = e.target.value;
-
-
         setTasksFields({
             ...tasksFields,
             [e.target.name]: value
         });
     }
 
-    const addTask = (e) => {
-        e.preventDefault();
+
+    // useEffect(
+    //     () => {
+    //         // const pId = projectId ?? "";
+    //         // if (pId.length == 0) {
+    //         //     return
+    //         // }
+
+    //         return onSnapshot(doc(db, "projects", projectId), (doc) => {
+    //             // setBoard(snapshot.data());
+    //             console.log(doc.data().boards[boardIndex].columns[columnIndex].tasks);
+    //             // setBoardData(Object.values(doc.data().boards[boardIndex].columns))
+
+    //         });
+
+    //     }
+    //     , [db, projectId]
+
+    // );
+
+
+    const filePickerRef = useRef(null);
+    const sendTask = async () => {
+
+
+        if (loading) return;
+        setLoading(true);
 
         let object = {
             id: '1',
@@ -69,87 +95,46 @@ function Form({ bIndex, selectedColumn }) {
             chat: '0',
             attachment: '0'
         }
-        console.log(object);
-        let newtasks = [...tasks, object];
-
-        setTasks(newtasks);
-        console.log(tasks);
 
 
-    }
-
-    // function handleChange(e) {
-    //     const value = e.target.value;
-
-
-    //     setTasksFields({
-    //         ...tasksFields,
-    //         [e.target.name]: value
-    //     });
-    // }
-
-    useEffect(() => {
+        // console.log(object);
+        // console.log(project);
+        // console.log(projectId);
 
 
 
 
-    }, []);
 
-    var pid = projectId.join('');
+        const taskRef = doc(db, "projects", projectId ?? "1");
+        
+        const newBoard = {...project.boards};
+        const newColumn = [...project.boards[boardIndex].columns];
 
-    const filePickerRef = useRef(null);
 
-    const sendTask = async () => {
-        if (loading) return;
-        setLoading(true);
+        newColumn[columnIndex] = {
+                ...newColumn[columnIndex],
+                tasks: [...newColumn[columnIndex].tasks, object]
+        
+        };
 
-        // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), 
-        // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
+        newBoard[boardIndex] = {...newBoard[boardIndex], columns: newColumn};
 
-        const taskRef = doc(db, "projects", pid);
+        // console.log(newColumn);
+        // console.log(project.boards[boardIndex]);
+        // console.log(newBoard);
+
         await updateDoc(taskRef, {
 
-            // boards:[{
-            //     title: 'f',
-            //     type: 'd',
-            //     select:'agile',
-            //     columns: {
-            //         name: 'backlog',
-            //         tasks: [{
-            //             id:'1',
-            //             priority: tasksFields.priority ,
-            //             title: tasksFields.title,
-            //             date: tasksFields.date,
-            //             details: tasksFields.details,
-            //             chat:'0',
-            //             attachment: '0'
-            //         }]}
-            // }],
-            boards: [{
-                title: 'f',
-                type: 'd',
-                select: 'agile',
-                columns: {
-                    name: 'backlog',
-                    tasks: [...tasks],
-                }
-            }],
-
+            ...project,
+            boards: newBoard,
 
         });
 
-
-
-
-
-        // taskRef.whereArrayContains("boards", Dev board).get()
-        //taskRef.push({
-
-        const fileRef = ref(storage, `tasks/${docRef.id}/file`);
+        const fileRef = sRef(storage, `tasks/${taskRef.id}/file`);
         if (selectedFile) {
             await uploadString(fileRef, selectedFile, "data_url").then(async () => {
                 const downloadURL = await getDownloadURL(fileRef);
-                await updateDoc(doc(db, "tasks", docRef.id), {
+                await updateDoc(doc(db, "tasks", taskRef.id), {
                     file: downloadURL,
                 });
             });
@@ -166,7 +151,7 @@ function Form({ bIndex, selectedColumn }) {
                 attachment: '0',
             }
         )
-        setTasks({});
+        // setTasks({});
         setSelectedFile(null);
 
     };
@@ -283,7 +268,6 @@ function Form({ bIndex, selectedColumn }) {
                             </div>
                         )}
 
-                        <button onClick={addTask}>save</button>
 
                     </div>
 

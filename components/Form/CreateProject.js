@@ -21,7 +21,6 @@ import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
 import { useRecoilState, useRecoilValue } from "recoil";
 import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
-// import { getProjectsState } from "../atoms/projectAtom";
 import Boards from './Boards';
 
 
@@ -40,31 +39,21 @@ function CreateProject() {
         {
             title: '',
             type: '',
-            columns: {
-                name: "backlog",
-                // tasks: [
-                //     // {
-                //     //     "id": 1,
-                //     //     "priority": "high",
-                //     //     "title": "Company website redesign.",
-                //     //     "date":"10-5-20",
-                //     //     "details": "details",
-                //     //     "chat": 10,
-                //     //     "attachment": 4,
-                //     // },
-                    
-                // ]
-            }
+            columns: [
+                { name: "backlog" },
+                { name: "In progress" },
+                { name: "In review" }
+            ]
 
         },
-    ])
-  
+    ]);
+
 
     const [projectFields, setProjectFields] = useState({
         title: '',
         details: '',
         date: '',
-    })
+    });
 
 
     function handleChange(e) {
@@ -93,8 +82,6 @@ function CreateProject() {
             timestamp: serverTimestamp(),
         });
 
-        // const dbInstance = collection(db, `projects/${docRef.id}/board`);
-
 
         setLoading(false);
         setProjectFields({
@@ -105,11 +92,8 @@ function CreateProject() {
         setboardFields({
             title: '',
             type: '',
-            columns: {
-                name: "backlog",
+            columns: [{}]
 
-            }
-            
         })
 
 
@@ -141,17 +125,17 @@ function CreateProject() {
     //         columns: {
     //             name: "backlog",
     //             tasks: [
-                    // {
-                    //     "id": 1,
-                    //     "priority": "high",
-                    //     "title": "Company website redesign.",
-                    //     "date":"10-5-20",
-                    //     "details": "details",
-                    //     "chat": 10,
-                    //     "attachment": 4,
-                       
-                    // },
-                    
+    // {
+    //     "id": 1,
+    //     "priority": "high",
+    //     "title": "Company website redesign.",
+    //     "date":"10-5-20",
+    //     "details": "details",
+    //     "chat": 10,
+    //     "attachment": 4,
+
+    // },
+
     //             ]
     //         }
     //     })
@@ -194,10 +178,17 @@ function CreateProject() {
         let object = {
             title: '',
             type: '',
-            columns: {
-                name: "backlog",
-
-            }
+            columns: [
+                {
+                    name: "backlog",
+                },
+                {
+                    name: "In progress",
+                },
+                {
+                    name: "In review",
+                }
+            ]
         }
 
         setboardFields([...boardFields, object])
@@ -275,7 +266,7 @@ function CreateProject() {
                                                 <div class="flex items-center justify-between">
                                                     <h2 className='text-white font-bold cursor-default'>New board</h2>
                                                     <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
-                                                      onClick={submit} >Save</button>
+                                                        onClick={submit} >Save</button>
                                                 </div>
                                                 <Field
                                                     fieldValue={board.name}
@@ -352,33 +343,33 @@ function CreateProject() {
 
                 {/*Members section*/}
                 <div className="w-1/3 space-y-8 p-4">
-                <div className="flex justify-between">
-                    <SectionTitle icon={<BsFillPersonLinesFill className="w-5 h-5 text-white" />} text="Members" />
-                    <button className='flex items-center cursor-pointer text-gray-100 '
-                             >
+                    <div className="flex justify-between">
+                        <SectionTitle icon={<BsFillPersonLinesFill className="w-5 h-5 text-white" />} text="Members" />
+                        <button className='flex items-center cursor-pointer text-gray-100 '
+                        >
                             <PlusIcon className="w-5 h-5 text-gray-100" />
                             Add Members
                         </button>
-                        </div>
+                    </div>
 
-                        <div className="w-full space-y-5 p-4 border border-black-300  rounded">
-                                            <div className="space-y-3">
-                                                <div class="flex items-center justify-between">
-                                                    <h2 className='text-white font-bold cursor-default'>Invite </h2>
-                                                    <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
-                                                     >Send</button>
-                                                </div>
-                                                <Field
-                                                    //fieldValue={board.name}
-                                                    //fieldFunc={event => handleBoardChange(event, index)}
-                                                    fieldType="text"
-                                                    fieldId="board Title"
-                                                    title="Enter email"
-                                                    name="title"
-                                                    placeHolder="EX : "
-                                                />
-                                            </div>
-                                            </div>
+                    <div className="w-full space-y-5 p-4 border border-black-300  rounded">
+                        <div className="space-y-3">
+                            <div class="flex items-center justify-between">
+                                <h2 className='text-white font-bold cursor-default'>Invite </h2>
+                                <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
+                                >Send</button>
+                            </div>
+                            <Field
+                                //fieldValue={board.name}
+                                //fieldFunc={event => handleBoardChange(event, index)}
+                                fieldType="text"
+                                fieldId="board Title"
+                                title="Enter email"
+                                name="title"
+                                placeHolder="EX : "
+                            />
+                        </div>
+                    </div>
                 </div>
             </div>
 

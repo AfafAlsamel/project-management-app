@@ -2,7 +2,7 @@ import React from 'react';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { useSession, signOut } from "next-auth/react";
-import { onSnapshot, collection, query, orderBy } from "@firebase/firestore";
+import { onSnapshot, collection, query, orderBy, doc } from "@firebase/firestore";
 import { db } from "../firebase";
 import {
   ClipboardListIcon,
@@ -22,12 +22,16 @@ import { boardState } from '../atoms/boardAtoms';
 function Layout({ children }) {
   const { data: session } = useSession();
 
+
+  const router = useRouter();;
+  const { projectId, boardId } = router.query;
+
   const [projectOpen, setprojectOpen] = useRecoilState(projectState);
   const [projectType, setprojectType] = useRecoilState(projectTypeState);
   const [projectItem, setProjectItem] = useRecoilState(getProjectsState);
   const [ProjectIdState, setProjectIdState] = useRecoilState(projectIdState);
   const [selectedBoard, setSelectedBoard] = useRecoilState(getBoardsState);
-  const [board, setBoardState] = useRecoilState(boardState) // use RecoilValue "project"
+  const [boardIndex, setBoardIndex] = useRecoilState(boardState) // use RecoilValue "project"
 
 
 
@@ -35,47 +39,58 @@ function Layout({ children }) {
   const [projects, setProjects] = useState([]);
   // const [board, setBoard] = useState([]);
 
-  const router = useRouter();
 
 
-  const [boards , setBoards] = useState([]);
+  const [boards, setBoards] = useState([]);
   const [boardOpen, setboardOpen] = useRecoilState(boardState);
-  //const [boardType, setboardType] = useRecoilState(boardTypeState);
-  //const [isNeww, setIsNeww] = useRecoilState(isNewwBoard);
 
 
-  // CLEAN
+
   useEffect(
     () =>
       onSnapshot(
         query(collection(db, "projects"), orderBy("timestamp", "asc")),
         (snapshot) => {
           setProjects(snapshot.docs);
+          console.log(snapshot.docs);
+
         }
       ),
     [db]
   );
 
   // useEffect(
-  //   () =>
-  //     onSnapshot(
-  //       query(
-  //         collection(db, "projects", "boards"),
-  //       ),
-  //       (snapshot) => setBoard(snapshot.docs)
-  //     ),
-  //   [db]
+
+  //   () => {
+  //     onSnapshot(doc(db, "projects", projectId ?? "1"), (snapshot) => {
+  //       // setBoard(snapshot.data());
+  //       console.log(snapshot.data());
+  //       // setProjects(snapshot.docs);
+
+  //     }),
+  //     [db, projectId];
+  //     // console.log(projects);
+
+  //   }
   // );
 
-  // const onClickBoard = ({ project, board }) => {
+  // useEffect(
+  //   () => {
+  //     onSnapshot(
+  //       query(doc(db, "projects", projectId ?? "1")),
+  //       (snapshot) => {
+  //         // setProjects(snapshot.docs);
 
-  //   router.push({
-  //     pathname: router.pathname,
-  //     query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
-  //   });
+  //       }
+  //     ),
+  //     [db];
+  //     console.log(projects);
 
+  //     // console.log(projectId);
 
-  // }
+  //   }
+  // );
+
 
 
   return (
@@ -99,6 +114,7 @@ function Layout({ children }) {
                     setprojectOpen(true);
                     setprojectType("projectModal");
                     setProjectItem(project.data());
+                    console.log(project.data());
                     setIsNew(false);
 
                   }}
@@ -122,8 +138,11 @@ function Layout({ children }) {
                       className="flex mt-2 items-center cursor-pointer"
                       onClick={() => {
 
-                        setProjectIdState([...project.id]);
-                        setBoardState([...project.data().boards]);
+
+                        setProjectItem(project.data());
+                        setProjectIdState(project.id);
+                        setBoardIndex(index);
+                        console.log(index);
 
                         router.push({
                           pathname: router.pathname,
@@ -136,10 +155,10 @@ function Layout({ children }) {
                       {/* <div onClick={() => setSelectedBoard(board.columns)}></div> */}
                       <ClipboardListIcon className="w-5 h-5 text-gray-100" />
                       {board.title}
-                       
+
                     </div>
-                    
-                    )}
+
+                  )}
                   {/* {project?.data().boards} */}
                 </div>
 
@@ -149,9 +168,9 @@ function Layout({ children }) {
           ))
         } />
       <main className="pl-40 pt-16 max-w-max">
-      
-            <Board/>
-         
+
+        <Board boardIndex={boardIndex}/>
+
       </main>
 
 
@@ -162,7 +181,7 @@ function Layout({ children }) {
           )}
         </AnimatePresence>
       }
-      
+
     </div>
   );
 }
