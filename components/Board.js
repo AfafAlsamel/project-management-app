@@ -36,12 +36,6 @@ function createGuidId() {
 
 
 
-<<<<<<< HEAD
-
-
-
-function Board({ project }) {
-=======
 function Board({ }) {
 
 
@@ -78,7 +72,6 @@ function Board({ }) {
 
     // const board = useRecoilValue(getBoardsState);
 
->>>>>>> d51ee612ac5e4f35193d03ba96e7e4e693b343f8
     const [ready, setReady] = useState(false);
 
     // const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
@@ -158,10 +151,7 @@ function Board({ }) {
                 <div className="flex items-center">
                     <h4 className="text-4xl font-bold text-gray-100">Kanban board</h4>
                 </div>
-<<<<<<< HEAD
-=======
             
->>>>>>> d51ee612ac5e4f35193d03ba96e7e4e693b343f8
             </div>
 
             {/* Board columns */}
@@ -180,7 +170,7 @@ function Board({ }) {
                                             >
                                                 <div
                                                     className={`bg-black-100 rounded-md shadow-md
-                              flex flex-col relative overflow-hidden
+                              flex flex-col relative overflow-hidden w-64
                               ${snapshot.isDraggingOver && "bg-black-200"}`}
                                                 >
 

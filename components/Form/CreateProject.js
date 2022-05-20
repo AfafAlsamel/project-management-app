@@ -271,6 +271,7 @@ function CreateProject() {
                                                     name="select"
 
                                                 >
+                                                    <option value="" selected disabled hidden>Select</option>
                                                     <option>Scrum </option>
                                                     <option>WaterFull</option>
                                                     <option>Agile</option>
@@ -309,6 +310,7 @@ function CreateProject() {
                                             name="select"
 
                                         >
+                                            <option value="" selected disabled hidden>Select</option>
                                             <option>Scrum </option>
                                             <option>WaterFull</option>
                                             <option>Agile</option>
