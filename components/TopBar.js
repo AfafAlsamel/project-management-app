@@ -1,10 +1,9 @@
 import React from 'react';
 import { SearchIcon, AtSymbolIcon, BellIcon, LogoutIcon } from '@heroicons/react/outline';
-// import Image from 'next/image';
-
 function TopBar({ userName, userNameTag, userImage, func }) {
     return (
-        <div className="h-16 pl-40 bg-black-200 border-2 border-b-black-300 w-full flex items-center justify-between pr-5">
+        <div className="h-16 pl-40 bg-black-200 border-2 border-b-black-300 w-full flex items-center 
+        justify-between pr-5">
             <div className="flex px-10 items-center">
                 <SearchIcon className="w-5 h-5 text-white" />
                 <input type="text" placeholder="Search for tasks ..."
@@ -30,5 +29,4 @@ function TopBar({ userName, userNameTag, userImage, func }) {
         </div>
     );
 }
-
 export default TopBar;

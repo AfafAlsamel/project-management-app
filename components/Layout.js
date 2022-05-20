@@ -19,6 +19,10 @@ import { getBoardsState, getProjectsState, isNewProject, projectIdState, project
 import Board from './Board';
 import { boardState } from '../atoms/boardAtoms';
 
+
+
+
+
 function Layout({ children }) {
   const { data: session } = useSession();
 
@@ -29,20 +33,13 @@ function Layout({ children }) {
   const [selectedBoard, setSelectedBoard] = useRecoilState(getBoardsState);
   const [board, setBoardState] = useRecoilState(boardState) // use RecoilValue "project"
 
-
-
   const [isNew, setIsNew] = useRecoilState(isNewProject);
   const [projects, setProjects] = useState([]);
   // const [board, setBoard] = useState([]);
 
   const router = useRouter();
-
-
   const [boards , setBoards] = useState([]);
   const [boardOpen, setboardOpen] = useRecoilState(boardState);
-  //const [boardType, setboardType] = useRecoilState(boardTypeState);
-  //const [isNeww, setIsNeww] = useRecoilState(isNewwBoard);
-
 
   // CLEAN
   useEffect(
@@ -55,27 +52,6 @@ function Layout({ children }) {
       ),
     [db]
   );
-
-  // useEffect(
-  //   () =>
-  //     onSnapshot(
-  //       query(
-  //         collection(db, "projects", "boards"),
-  //       ),
-  //       (snapshot) => setBoard(snapshot.docs)
-  //     ),
-  //   [db]
-  // );
-
-  // const onClickBoard = ({ project, board }) => {
-
-  //   router.push({
-  //     pathname: router.pathname,
-  //     query: { ...router.query, myqueryparam: `projects/${project.id}/boards/${board.title}` }
-  //   });
-
-
-  // }
 
 
   return (

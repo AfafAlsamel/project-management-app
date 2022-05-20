@@ -19,11 +19,6 @@ function CardItem({ data, index }) {
   const [modalOpen, setModalOpen] = useRecoilState(modalState)
   const [modalType, setModalType] = useRecoilState(modalTypeState)
   
-
-  // <div onClick={() => {
-  //   setModalOpen(true);
-  //   setModalType("dropIn");
-  // }}>
   return (
     <Draggable index={index} draggableId={data.id.toString()}>
       {(provided) => (
@@ -67,30 +62,6 @@ function CardItem({ data, index }) {
                 <label className="text-white">{data.attachment}</label>
               </div>
             </div>
-
-            {/* <ul className="flex space-x-3">
-              {data.assignees.map((ass, index) => {
-                return (
-                  <li key={index}>
-                    <Image
-                      src={ass.avt}
-                      width="36"
-                      height="36"
-                      objectFit="cover"
-                      className=" rounded "
-                    />
-                  </li>
-                );
-              })}
-              <li>
-                <button
-                  className="border border-dashed flex items-center w-9 h-9 border-white justify-center
-                    rounded-full"
-                >
-                  <PlusIcon className="w-5 h-5 text-white" />
-                </button>
-              </li>
-            </ul> */}
           </div>
         </div>
 

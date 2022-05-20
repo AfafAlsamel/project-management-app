@@ -26,11 +26,11 @@ function createGuidId() {
 }
 
 
+
+
+
+
 function Board({ project }) {
-
-
-    // const board = useRecoilValue(getBoardsState);
-
     const [ready, setReady] = useState(false);
     const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
     const [showForm, setShowForm] = useState(false);
@@ -101,44 +101,6 @@ function Board({ project }) {
                 <div className="flex items-center">
                     <h4 className="text-4xl font-bold text-gray-100">Kanban board</h4>
                 </div>
-                {/* 
-            <ul className="flex space-x-3">
-              <li>
-                <Image
-                  src="https://randomuser.me/api/portraits/men/75.jpg"
-                  width="36"
-                  height="36"
-                  objectFit="cover"
-                  className=" rounded-full "
-                />
-              </li>
-              <li>
-                <Image
-                  src="https://randomuser.me/api/portraits/men/76.jpg"
-                  width="36"
-                  height="36"
-                  objectFit="cover"
-                  className=" rounded-full "
-                />
-              </li>
-              <li>
-                <Image
-                  src="https://randomuser.me/api/portraits/men/78.jpg"
-                  width="36"
-                  height="36"
-                  objectFit="cover"
-                  className=" rounded-full "
-                />
-              </li>
-              <li>
-                <button
-                  className="border border-dashed flex items-center w-9 h-9 border-gray-100 justify-center
-                  rounded-full"
-                >
-                  <PlusIcon className="w-5 h-5 text-gray-100" />
-                </button>
-              </li>
-            </ul> */}
             </div>
 
             {/* Board columns */}

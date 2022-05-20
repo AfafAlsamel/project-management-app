@@ -24,14 +24,9 @@ import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
 // import { getProjectsState } from "../atoms/projectAtom";
 import Boards from './Boards';
 
-
-
-
-
 function CreateProject() {
 
     const { data: session } = useSession();
-
     const [loading, setLoading] = useState(false);
     const project = useRecoilValue(getProjectsState);
     const [projectt, editProject] = useRecoilState(getProjectsState);
@@ -42,35 +37,19 @@ function CreateProject() {
             type: '',
             columns: {
                 name: "backlog",
-                // tasks: [
-                //     // {
-                //     //     "id": 1,
-                //     //     "priority": "high",
-                //     //     "title": "Company website redesign.",
-                //     //     "date":"10-5-20",
-                //     //     "details": "details",
-                //     //     "chat": 10,
-                //     //     "attachment": 4,
-                //     // },
-                    
-                // ]
+                tasks: [...tasks ]
             }
-
         },
     ])
   
-
     const [projectFields, setProjectFields] = useState({
         title: '',
         details: '',
         date: '',
     })
 
-
     function handleChange(e) {
         const value = e.target.value;
-
-
         setProjectFields({
             ...projectFields,
             [e.target.name]: value
@@ -81,9 +60,6 @@ function CreateProject() {
     const sendProject = async () => {
         console.log(projectFields)
         console.log(projectFields.title)
-
-
-
         if (loading) return;
         setLoading(true);
         const docRef = await addDoc(collection(db, "projects"), {
@@ -92,10 +68,6 @@ function CreateProject() {
             boards: boardFields,
             timestamp: serverTimestamp(),
         });
-
-        // const dbInstance = collection(db, `projects/${docRef.id}/board`);
-
-
         setLoading(false);
         setProjectFields({
             title: '',
@@ -114,67 +86,6 @@ function CreateProject() {
 
 
     };
-
-
-    // const updateProject = async () => {
-
-    //     if (loading) return;
-    //     setLoading(true);
-    //     const docRef = await updateDoc(collection(db, "projects"), {
-    //         projectDetails: projectFields,
-    //         boards: boardFields,
-    //         timestamp: serverTimestamp(),
-    //     });
-
-    //     // const dbInstance = collection(db, `projects/${docRef.id}/board`);
-
-
-    //     setLoading(false);
-    //     setProjectFields({
-    //         title: '',
-    //         details: '',
-    //         date: '',
-    //     })
-    //     setboardFields({
-    //         title: '',
-    //         type: '',
-    //         columns: {
-    //             name: "backlog",
-    //             tasks: [
-                    // {
-                    //     "id": 1,
-                    //     "priority": "high",
-                    //     "title": "Company website redesign.",
-                    //     "date":"10-5-20",
-                    //     "details": "details",
-                    //     "chat": 10,
-                    //     "attachment": 4,
-                       
-                    // },
-                    
-    //             ]
-    //         }
-    //     })
-
-    // };
-
-
-    {/*const sendBoard = async () => {
-        if (loading) return;
-        setLoading(true);
-        const docRef = await addDoc(collection(db, "Boards"), {
-            boardtitle: boardTitle,
-            type:boardType,
-            timestamp: serverTimestamp(),
-        });
-
-        setLoading(false);
-        setboardFields([...boardFields, object])
-    };
-*/}
-
-
-
 
     const handleBoardChange = (event, index) => {
         let data = [...boardFields];
@@ -202,10 +113,6 @@ function CreateProject() {
 
         setboardFields([...boardFields, object])
     }
-
-
-
-
 
 
     return (
@@ -274,7 +181,8 @@ function CreateProject() {
                                             <div className="space-y-3">
                                                 <div class="flex items-center justify-between">
                                                     <h2 className='text-white font-bold cursor-default'>New board</h2>
-                                                    <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
+                                                    <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark
+                                                    disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
                                                       onClick={submit} >Save</button>
                                                 </div>
                                                 <Field
@@ -290,7 +198,7 @@ function CreateProject() {
                                             <div class="flex items-center justify-between ">
                                                 <label className='text-gray-100'>Methdology : </label>
                                                 <select class="bg-black-100 cursor-pointer appearance-none w-32 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                                                    value={board.type}
+                                                    value={board.select}
                                                     onChange={event => handleBoardChange(event, index)}
                                                     name="select"
 

@@ -3,9 +3,6 @@ import Backdrop from "./Backdrop";
 import { XIcon } from "@heroicons/react/outline";
 import { useRecoilValue } from "recoil";
 import { getProjectsState } from "../atoms/projectAtoms";
-//import IconButton from "@mui/material/IconButton";
-//import { useSession } from "next-auth/react";
-//import { getPostState } from "../atoms/postAtom";
 
 const dropIn = {
     hidden: {

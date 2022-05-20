@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from 'react'
-
 import {
     PaperClipIcon,
     PlusIcon,
@@ -17,40 +16,41 @@ import {
     updateDoc,
     arrayUnion,
 } from "@firebase/firestore";
-
+//import { getDatabase, ref, child, push, update } from "firebase/database";
+import { ref as sRef } from 'firebase/storage';
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
-import { useRecoilState } from 'recoil';
-import { projectIdState } from '../../atoms/projectAtoms';
 
+import { projectIdState } from '../../atoms/projectAtoms';
+import { useRecoilState, useRecoilValue } from "recoil";
+import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
 function Form({ bIndex, selectedColumn }) {
     const { data: session } = useSession();
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projectId, setProjectId] = useRecoilState(projectIdState);
-    
-
     const [tasksFields, setTasksFields] = useState({
-        id: '',
-        priority: '',
-        title: '',
-        details: '',
-        date: '',
-        attachment: '0',
-
-    });
+                id: '',
+                priority: '',
+                title: '',
+                details: '',
+                date: '',
+                attachment: '0',
+            
+            
+        });
 
     const [tasks, setTasks] = useState([]);
 
+    const handleChange = (event, index) => {
+        let data = [...tasksFields];
+        data[index][event.target.name] = event.target.value;
+        setTasksFields(data);
+    }
 
     const handleTaskChange = (e) => {
-        // let data = [...tasksFields];
-        // data[e.target.name] = e.target.value;
-        // setTasksFields(data);
         const value = e.target.value;
-
-
         setTasksFields({
             ...tasksFields,
             [e.target.name]: value
@@ -59,13 +59,12 @@ function Form({ bIndex, selectedColumn }) {
 
     const addTask = (e) => {
         e.preventDefault();
-
         let object = {
             id: '1',
-            priority: tasksFields.priority,
-            title: tasksFields.title,
-            date: tasksFields.date,
-            details: tasksFields.details,
+            priority: '',
+            title: '',
+            date: '',
+            details: '',
             chat: '0',
             attachment: '0'
         }
@@ -74,26 +73,9 @@ function Form({ bIndex, selectedColumn }) {
 
         setTasks(newtasks);
         console.log(tasks);
-
-
     }
 
-    // function handleChange(e) {
-    //     const value = e.target.value;
-
-
-    //     setTasksFields({
-    //         ...tasksFields,
-    //         [e.target.name]: value
-    //     });
-    // }
-
-    useEffect(() => {
-
-
-
-
-    }, []);
+    useEffect(() => {}, []);
 
     var pid = projectId.join('');
 
@@ -102,36 +84,26 @@ function Form({ bIndex, selectedColumn }) {
     const sendTask = async () => {
         if (loading) return;
         setLoading(true);
-
-        // const docRef = await updateDoc(collection(db, "projects", projectId, "boards", bIndex, "columns", selectedColumn), 
-        // const docRef = await updateDoc(collection(db, "projects",projectId, "boards", bIndex), {
-
         const taskRef = doc(db, "projects", pid);
         await updateDoc(taskRef, {
-
-            // boards:[{
-            //     title: 'f',
-            //     type: 'd',
-            //     select:'agile',
-            //     columns: {
-            //         name: 'backlog',
-            //         tasks: [{
-            //             id:'1',
-            //             priority: tasksFields.priority ,
-            //             title: tasksFields.title,
-            //             date: tasksFields.date,
-            //             details: tasksFields.details,
-            //             chat:'0',
-            //             attachment: '0'
-            //         }]}
-            // }],
             boards: [{
                 title: 'f',
                 type: 'd',
                 select: 'agile',
                 columns: {
                     name: 'backlog',
-                    tasks: [...tasks],
+                    tasks: [
+                         {
+                        id: 1,
+                         priority: tasksFields.priority,
+                         title: tasksFields.title,
+                        date:tasksFields.date,
+                         details: tasksFields.details,
+                         chat: 10,
+                        attachment: 4,
+                         },
+                            
+                         ],
                 }
             }],
 
@@ -139,17 +111,11 @@ function Form({ bIndex, selectedColumn }) {
         });
 
 
-
-
-
-        // taskRef.whereArrayContains("boards", Dev board).get()
-        //taskRef.push({
-
-        const fileRef = ref(storage, `tasks/${docRef.id}/file`);
+        const fileRef = sRef(storage, `tasks/${taskRef.id}/file`);
         if (selectedFile) {
             await uploadString(fileRef, selectedFile, "data_url").then(async () => {
                 const downloadURL = await getDownloadURL(fileRef);
-                await updateDoc(doc(db, "tasks", docRef.id), {
+                await updateDoc(doc(db, "tasks", taskRef.id), {
                     file: downloadURL,
                 });
             });
@@ -192,9 +158,9 @@ function Form({ bIndex, selectedColumn }) {
 
     return (
         <div className="space-y-4 divide-y divide-black-300 cursor-default">
-            <div className="flex space-x-4 divide-x divide-black-300">
+              
+                <div className="flex space-x-4 divide-x divide-black-300" >
                 <div className="w-1/3 space-y-8 p-4">
-
                     <div className="space-y-4">
                         <SectionTitle icon={<CogIcon className="w-5 h-5 text-white" />} text="Task settings" />
                         <Field
@@ -219,7 +185,7 @@ function Form({ bIndex, selectedColumn }) {
                         <div class="flex items-center justify-between ">
                             <label className='text-gray-100'>Priority : </label>
                             <select class="bg-black-100 appearance-none w-30 text-white border border-gray-400 hover:border-gray-500 px-4 py-2 pr-8 rounded shadow leading-tight focus:outline-none focus:shadow-outline"
-                                value={tasksFields.priority}
+                                value={tasksFields.select}
                                 onChange={(e) => handleTaskChange(e)}
                                 name="select"  >
                                 <option>High</option>
@@ -313,7 +279,10 @@ function Form({ bIndex, selectedColumn }) {
 
 
                 </div>
-            </div>
+                </div>
+  
+
+          
 
             <div className="pt-4">
                 <button
