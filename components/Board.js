@@ -6,6 +6,13 @@ import {
     DotsVerticalIcon,
     PlusCircleIcon,
 } from "@heroicons/react/outline";
+import {
+    collection,
+    doc,
+    onSnapshot,
+    orderBy,
+    query,
+} from "@firebase/firestore";
 import CardItem from "../components/CardItem";
 import BoardData from "../data/board-data.json";
 import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
@@ -14,8 +21,10 @@ import Form from "../components/Form/TaskForm";
 import Modal from "../components/Modal";
 import { useRecoilState, useRecoilValue } from "recoil";
 import { modalState, modalType, modalTypeState } from "../atoms/modalAtoms";
-import { getBoardsState } from '../atoms/projectAtoms';
+import { getBoardsState, projectIdState } from '../atoms/projectAtoms';
 import { boardState } from '../atoms/boardAtoms';
+import { db } from "../firebase";
+
 
 
 function createGuidId() {
@@ -27,15 +36,59 @@ function createGuidId() {
 
 
 
+<<<<<<< HEAD
 
 
 
 function Board({ project }) {
+=======
+function Board({ }) {
+
+
+    const [projectId, setProjectId] = useRecoilState(projectIdState);
+    const boardIndex = useRecoilValue(boardState) // use RecoilValue "project"
+
+
+
+
+    useEffect(
+        () => {
+            const pId = projectId ?? "";
+            if (pId.length == 0) {
+                return
+            }
+
+            return onSnapshot(doc(db, "projects", projectId), (doc) => {
+                // setBoard(snapshot.data());
+                console.log(Object.values(doc.data().boards[boardIndex].columns));
+                setBoardData(Object.values(doc.data().boards[boardIndex].columns))
+
+            });
+
+        }
+        , [db, projectId]
+
+    );
+
+
+
+
+
+
+
+    // const board = useRecoilValue(getBoardsState);
+
+>>>>>>> d51ee612ac5e4f35193d03ba96e7e4e693b343f8
     const [ready, setReady] = useState(false);
-    const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
+
+    // const [boardData, setBoardData] = useRecoilState(boardState); // use RecoilValue "project"
+    const [boardData, setBoardData] = useState([]);
+    // const [boardData, setBoardData] = useRecoilState(boardState) // use RecoilValue "project"
+
+
     const [showForm, setShowForm] = useState(false);
     const [selectedBoard, setSelectedBoard] = useState(0);
-    const [selectedColumn, setSelectedColumn] = useState({});
+    const [columnIndex, setcolumnIndex] = useState("");
 
 
 
@@ -48,7 +101,10 @@ function Board({ project }) {
             setReady(true);
 
         }
-        console.log(boardData)
+
+        // console.log(boardData[columnIndexx].columns);
+        // console.log(boardData[0].columns)
+
 
     }, []);
 
@@ -71,27 +127,28 @@ function Board({ project }) {
 
     const onTextAreaKeyPress = (e) => {
 
-            setModalOpen(true);
-            setModalType("dropIn");
-            
-            const val = e.target.value;
- 
-  
-                const boardId = e.target.attributes['data-id'].value;
-                const item = {
-                    id: createGuidId(),
-                    title: val,
-                    priority: 0,
-                    chat: 0,
-                    attachment: 0,
-                    assignees: []
-                }
-                let newBoardData = boardData;
-                newBoardData[boardId].items.push(item);
-                setBoardData(newBoardData);
-                setShowForm(false);
-                e.target.value = '';
-     
+        setModalOpen(true);
+        setModalType("dropIn");
+
+        const val = e.target.value;
+
+
+        const columnId = selectedColumn;
+        const item = {
+            id: createGuidId(),
+            title: val,
+            priority: 0,
+            chat: 0,
+            attachment: 0,
+            assignees: []
+        }
+        let newColumnData = boardData;
+        newColumnData[columnId].items.push(item);
+        setBoardData(newColumnData);
+        setModalOpen(false);
+        // setShowForm(false);
+        e.target.value = '';
+
     }
 
     return (
@@ -101,17 +158,21 @@ function Board({ project }) {
                 <div className="flex items-center">
                     <h4 className="text-4xl font-bold text-gray-100">Kanban board</h4>
                 </div>
+<<<<<<< HEAD
+=======
+            
+>>>>>>> d51ee612ac5e4f35193d03ba96e7e4e693b343f8
             </div>
 
             {/* Board columns */}
             {ready && (
                 <DragDropContext onDragEnd={onDragEnd}>
                     <div className="grid grid-cols-4 gap-5 my-5">
-                        {Object.values(boardData).map((board, bIndex) => {
-                            return (
-                                <div key={board.index}>
+                    {boardData?.map((column,cIndex) =>
+
+                                <div key={column.cIndex}>
                                     {/* <p>{board.columns.name}</p> */}
-                                    <Droppable droppableId={bIndex.toString()}>
+                                    <Droppable droppableId={cIndex.toString()}>
                                         {(provided, snapshot) => (
                                             <div
                                                 {...provided.droppableProps}
@@ -125,15 +186,16 @@ function Board({ project }) {
 
                                                     <h4 className=" p-3 flex justify-between items-center mb-2">
                                                         <span className="text-2xl text-white">
-                                                            {board.columns?.name}
+
+                                                            {column.name}
                                                         </span>
                                                         <DotsVerticalIcon className="w-5 h-5 text-gray-100" />
                                                     </h4>
 
                                                     <div className="overflow-y-auto overflow-x-hidden h-auto"
                                                         style={{ maxHeight: 'calc(100vh - 290px)' }}>
-                                                        {board.columns?.tasks?.length > 0 &&
-                                                            board.columns.tasks.map((item, iIndex) => {
+                                                        {column.tasks?.length > 0 &&
+                                                            column.tasks.map((item, iIndex) => {
                                                                 return (
                                                                     <CardItem
                                                                         key={item.id}
@@ -149,11 +211,10 @@ function Board({ project }) {
 
                                                     <button
                                                         className="flex justify-center items-center my-3 space-x-2 text-lg"
-                                                        data-id={bIndex}
+                                                        // data-id={cIndex}
                                                         onClick={() => {
-                                                            {(e) => onTextAreaKeyPress(e)};
-                                                            setSelectedColumn(board.columns.tasks);
-                                                            setSelectedBoard(bIndex);
+                                                            setcolumnIndex(cIndex);
+                                                            setSelectedBoard(cIndex);
                                                             setModalOpen(true);
                                                             setModalType("dropIn");
                                                         }}
@@ -169,8 +230,12 @@ function Board({ project }) {
                                         )}
                                     </Droppable>
                                 </div>
-                            );
-                        })}
+
+
+                            )
+
+
+                        }
                     </div>
                 </DragDropContext>
             )}
@@ -178,7 +243,7 @@ function Board({ project }) {
             {
                 <AnimatePresence>
                     {modalOpen && (
-                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form bIndex={selectedBoard} column={selectedColumn}/>} />
+                        <Modal handleClose={() => setModalOpen(false)} type={modalType} comp={<Form columnIndex={columnIndex} />} />
                     )}
                 </AnimatePresence>
             }

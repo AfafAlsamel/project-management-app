@@ -12,7 +12,7 @@ export const projectTypeState = atom({
 
 export const getProjectsState = atom({
   key: "getProjectsState",
-  default: {},
+  default: [],
 });
 
 

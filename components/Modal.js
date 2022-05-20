@@ -50,7 +50,7 @@ const gifYouUp = {
 
 const Modal = ({ handleClose, type, comp }) => {
     // const { data: session } = useSession();
-    const project = useRecoilValue(getProjectsState);
+    // const project = useRecoilValue(getProjectsState);
 
 
     return (

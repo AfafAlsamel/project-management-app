@@ -14,22 +14,26 @@ import {
     doc,
     serverTimestamp,
     updateDoc,
+    onSnapshot,
     arrayUnion,
 } from "@firebase/firestore";
-//import { getDatabase, ref, child, push, update } from "firebase/database";
+
 import { ref as sRef } from 'firebase/storage';
+
+
 import Field from '../Field'
 import SectionTitle from './SectionTitle';
 import { useSession } from 'next-auth/react';
+import { useRecoilState, useRecoilValue } from 'recoil';
+import { getProjectsState, projectIdState, } from '../../atoms/projectAtoms';
+import { boardState } from '../../atoms/boardAtoms';
 
-import { projectIdState } from '../../atoms/projectAtoms';
-import { useRecoilState, useRecoilValue } from "recoil";
-import { getProjectsState, isNewProject } from '../../atoms/projectAtoms';
-function Form({ bIndex, selectedColumn }) {
-    const { data: session } = useSession();
+function Form({ columnIndex }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
     const [projectId, setProjectId] = useRecoilState(projectIdState);
+    const [project, setProject] = useRecoilState(getProjectsState);
+    const boardIndex = useRecoilValue(boardState) // use RecoilValue "project"
     const [tasksFields, setTasksFields] = useState({
                 id: '',
                 priority: '',
@@ -41,7 +45,6 @@ function Form({ bIndex, selectedColumn }) {
             
         });
 
-    const [tasks, setTasks] = useState([]);
 
     const handleChange = (event, index) => {
         let data = [...tasksFields];
@@ -57,8 +60,34 @@ function Form({ bIndex, selectedColumn }) {
         });
     }
 
-    const addTask = (e) => {
-        e.preventDefault();
+
+    // useEffect(
+    //     () => {
+    //         // const pId = projectId ?? "";
+    //         // if (pId.length == 0) {
+    //         //     return
+    //         // }
+
+    //         return onSnapshot(doc(db, "projects", projectId), (doc) => {
+    //             // setBoard(snapshot.data());
+    //             console.log(doc.data().boards[boardIndex].columns[columnIndex].tasks);
+    //             // setBoardData(Object.values(doc.data().boards[boardIndex].columns))
+
+    //         });
+
+    //     }
+    //     , [db, projectId]
+
+    // );
+
+
+    const filePickerRef = useRef(null);
+    const sendTask = async () => {
+
+
+        if (loading) return;
+        setLoading(true);
+
         let object = {
             id: '1',
             priority: '',
@@ -68,48 +97,40 @@ function Form({ bIndex, selectedColumn }) {
             chat: '0',
             attachment: '0'
         }
-        console.log(object);
-        let newtasks = [...tasks, object];
 
-        setTasks(newtasks);
-        console.log(tasks);
-    }
 
-    useEffect(() => {}, []);
+        // console.log(object);
+        // console.log(project);
+        // console.log(projectId);
 
-    var pid = projectId.join('');
 
-    const filePickerRef = useRef(null);
 
-    const sendTask = async () => {
-        if (loading) return;
-        setLoading(true);
-        const taskRef = doc(db, "projects", pid);
+
+
+        const taskRef = doc(db, "projects", projectId ?? "1");
+        
+        const newBoard = {...project.boards};
+        const newColumn = [...project.boards[boardIndex].columns];
+
+
+        newColumn[columnIndex] = {
+                ...newColumn[columnIndex],
+                tasks: [...newColumn[columnIndex].tasks, object]
+        
+        };
+
+        newBoard[boardIndex] = {...newBoard[boardIndex], columns: newColumn};
+
+        // console.log(newColumn);
+        // console.log(project.boards[boardIndex]);
+        // console.log(newBoard);
+
         await updateDoc(taskRef, {
-            boards: [{
-                title: 'f',
-                type: 'd',
-                select: 'agile',
-                columns: {
-                    name: 'backlog',
-                    tasks: [
-                         {
-                        id: 1,
-                         priority: tasksFields.priority,
-                         title: tasksFields.title,
-                        date:tasksFields.date,
-                         details: tasksFields.details,
-                         chat: 10,
-                        attachment: 4,
-                         },
-                            
-                         ],
-                }
-            }],
 
+            ...project,
+            boards: newBoard,
 
         });
-
 
         const fileRef = sRef(storage, `tasks/${taskRef.id}/file`);
         if (selectedFile) {
@@ -132,7 +153,7 @@ function Form({ bIndex, selectedColumn }) {
                 attachment: '0',
             }
         )
-        setTasks({});
+        // setTasks({});
         setSelectedFile(null);
 
     };
@@ -249,7 +270,6 @@ function Form({ bIndex, selectedColumn }) {
                             </div>
                         )}
 
-                        <button onClick={addTask}>save</button>
 
                     </div>
 

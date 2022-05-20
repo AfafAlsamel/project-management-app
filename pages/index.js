@@ -9,6 +9,8 @@ import Board from "../components/Board";
 
 export default function Home({ trendingResults, followResults, providers }) {
 
+
+
   const { data: session } = useSession();
 
 

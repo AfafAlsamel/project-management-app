@@ -2,7 +2,7 @@ import { atom } from "recoil";
 
 export const boardState = atom({
   key: "boardState",
-  default: [{}],
+  default: 0,
 });
 
 export const boardTypeState = atom({
