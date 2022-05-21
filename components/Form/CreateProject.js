@@ -35,9 +35,21 @@ function CreateProject() {
             title: '',
             type: '',
             columns: [
-                { name: "backlog" },
-                { name: "In progress" },
-                { name: "In review" }
+                {
+                    name: "backlog",
+                    tasks: [],
+
+                },
+                {
+                    name: "In progress",
+                    tasks: [],
+
+                },
+                {
+                    name: "In review",
+                    tasks: [],
+
+                }
             ]
 
         },
@@ -167,18 +179,24 @@ function CreateProject() {
         let object = {
             title: '',
             type: '',
+
             columns: [
                 {
                     name: "backlog",
+                    tasks: [],
+
                 },
                 {
                     name: "In progress",
+                    tasks: [],
+
                 },
                 {
                     name: "In review",
+                    tasks: [],
                 }
             ]
-        }
+        };
 
         setboardFields([...boardFields, object])
     }

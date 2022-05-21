@@ -28,6 +28,13 @@ import { useRecoilState, useRecoilValue } from 'recoil';
 import { getProjectsState, projectIdState, } from '../../atoms/projectAtoms';
 import { boardState } from '../../atoms/boardAtoms';
 
+function createGuidId() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+        return v.toString(16);
+    });
+}
+
 function Form({ columnIndex }) {
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -40,17 +47,17 @@ function Form({ columnIndex }) {
                 title: '',
                 details: '',
                 date: '',
-                attachment: '0',
+                attachment: '',
             
             
         });
 
 
-    const handleChange = (event, index) => {
-        let data = [...tasksFields];
-        data[index][event.target.name] = event.target.value;
-        setTasksFields(data);
-    }
+    // const handleChange = (event, index) => {
+    //     let data = [...tasksFields];
+    //     data[index][event.target.name] = event.target.value;
+    //     setTasksFields(data);
+    // }
 
     const handleTaskChange = (e) => {
         const value = e.target.value;
@@ -89,11 +96,11 @@ function Form({ columnIndex }) {
         setLoading(true);
 
         let object = {
-            id: '1',
-            priority: '',
-            title: '',
-            date: '',
-            details: '',
+            id: createGuidId(),
+            priority: tasksFields.priority,
+            title: tasksFields.title,
+            date: tasksFields.date,
+            details: tasksFields.details,
             chat: '0',
             attachment: '0'
         }
@@ -150,7 +157,7 @@ function Form({ columnIndex }) {
                 title: '',
                 details: '',
                 date: '',
-                attachment: '0',
+                attachment: '',
             }
         )
         // setTasks({});

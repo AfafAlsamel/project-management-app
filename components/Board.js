@@ -54,7 +54,7 @@ function Board({ }) {
 
             return onSnapshot(doc(db, "projects", projectId), (doc) => {
                 // setBoard(snapshot.data());
-                console.log(Object.values(doc.data().boards[boardIndex].columns));
+                // console.log(Object.values(doc.data().boards[boardIndex].columns));
                 setBoardData(Object.values(doc.data().boards[boardIndex].columns))
 
             });
