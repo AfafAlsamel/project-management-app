@@ -27,9 +27,11 @@ function CreateProject() {
 
     const { data: session } = useSession();
     const [loading, setLoading] = useState(false);
+    const [list, setList] = useState(false)
     const project = useRecoilValue(getProjectsState);
     const [projectt, editProject] = useRecoilState(getProjectsState);
     const isNew = useRecoilValue(isNewProject);
+    const [email, setemail] = useState('');
     const [boardFields, setboardFields] = useState([
         {
             title: '',
@@ -69,6 +71,7 @@ function CreateProject() {
             [e.target.name]: value
         });
     }
+   
 
 
     const sendProject = async () => {
@@ -200,7 +203,15 @@ function CreateProject() {
 
         setboardFields([...boardFields, object])
     }
-
+    const handleClick = (e) => {
+        e.preventDefault()
+        if(e.target.value) {
+            setList(!list)
+        }
+        setList(!list)
+        setemail('');
+    
+    }
 
     return (
         <div className="space-y-4 divide-y divide-black-300 cursor-default">
@@ -362,11 +373,11 @@ function CreateProject() {
                             <div class="flex items-center justify-between">
                                 <h2 className='text-white font-bold cursor-default'>Invite </h2>
                                 <button class="bg-primary text-white rounded px-4 py-1.5 font-bold shadow-md hover:bg-primary-dark disabled:hover:bg-black-300 disabled:opacity-50 disabled:cursor-default" type="button"
-                                >Send</button>
+                                onClick = {handleClick}>Send</button>
                             </div>
                             <Field
-                                //fieldValue={board.name}
-                                //fieldFunc={event => handleBoardChange(event, index)}
+                                fieldValue={email}
+                                fieldFunc={event => setemail(event.target.value)}
                                 fieldType="text"
                                 fieldId="board Title"
                                 title="Enter email"
@@ -375,6 +386,15 @@ function CreateProject() {
                             />
                         </div>
                     </div>
+                    {list ?   
+                          <div className="w-full space-y-5 p-4 border border-black-300 rounded"> 
+                             <div className="space-y-3">
+                            <div class="flex items-center  justify-between">
+                                <h2 className='text-white font-bold cursor-default'>Invite send Sucsessfuly </h2>
+                                </div>
+                                </div>
+                             </div> :  ' ' }
+                           
                 </div>
             </div>
 
